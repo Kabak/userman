@@ -65,7 +65,8 @@ if( $update == 'true')
 		}
 
 // Update user temporary access DB		
-		include ('userman.users.edit.update.delete.php');		
+	include cot_incfile('userman', 'plug','users.edit.update.delete');
+	
 		
 		cot_log("Deleted user #".$id,'adm');
                 cot_message(um_build_string($L['user'],$name,$L['deleted']),'warning');
@@ -141,7 +142,7 @@ if (cot_module_active('pm'))
 		$euser['user_name'] = ($euser['user_name']=='') ? $urr['user_name'] : $euser['user_name'];
 
 //		$euser['user_birthdate'] = (is_null($euser['user_birthdate'])) ? '0000-00-00' : cot_stamp2date($euser['user_birthdate']);
-
+/*
 		if (!$euserbanned)
 		{
 			$euser['user_banexpire'] = 0;
@@ -150,7 +151,7 @@ if (cot_module_active('pm'))
 		{
 			$euser['user_banexpire'] += $sys['now'];
 		}
-
+*/
 		if ($euser['user_name'] != $urr['user_name'])
 		{
 			$newname = $euser['user_name'];
@@ -223,7 +224,7 @@ if (cot_module_active('pm'))
 		}
 
 // Update user temporary access DB		
-		include ('userman.users.edit.update.done.php');
+		include cot_incfile('userman', 'plug','users.edit.update.done');
 // Если пользователь имеет временны доступ то не выводить сообщение что данные пользователя успешно обновлены		
 	if( $user_found['active'] != true  ){		
     		cot_auth_clear($id);
@@ -250,8 +251,8 @@ $delete_pfs = cot_module_active('pfs') ? cot_checkbox(false, 'um_edit_userdelpfs
 	'UM_EDIT_NAME' => cot_inputbox('text', 'um_edit_username', $urr['user_name'], array('size' => 32, 'maxlength' => 100) + $protected),
 //	'UM_EDIT_ACTIVE' => $user_form_active,
 //	'UM_EDIT_BANNED' => $user_form_banned,
-	'UM_EDIT_THEME' => cot_inputbox('text', 'um_edit_usertheme', $urr['user_theme'], array('size' => 32, 'maxlength' => 32)),
-	'UM_EDIT_LANG' => cot_inputbox('text', 'um_edit_userlang', $urr['user_lang'], array('size' => 32, 'maxlength' => 32)),
+	'UM_EDIT_THEME' => cot_selectbox_theme($urr['user_theme'], $urr['user_scheme'], 'rusertheme'),
+	'UM_EDIT_LANG' => cot_selectbox_lang($urr['user_lang'], 'ruserlang'),
 	'UM_EDIT_NEWPASS' => cot_inputbox('password', 'um_edit_usernewpass', '', array('size' => 12, 'maxlength' => 32, 'autocomplete' => 'off') + $protected),
 	'UM_EDIT_MAINGRP' => cot_build_group($urr['user_maingrp']),
 	'UM_EDIT_GROUPS' => cot_build_um1_groupsms($urr['user_id'], $usr['isadmin'], $urr['user_maingrp']),

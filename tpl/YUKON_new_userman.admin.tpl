@@ -28,38 +28,52 @@
 										<a href="{UM_USER_RIGHTS}" class="btn btn-primary">{UM_USER_RIGHTS_TEXT}</a>
 										<a href="{UM_EXTRA_FIELDS}" class="btn btn-primary">{UM_EXTRA_FIELDS_TEXT}</a>
 									</div>
-										<form action="{UM_USERS_CREATE_SEND}" method="post" name="um_useredit" enctype="multipart/form-data">							
-										<input type="hidden" name="id" value="{UM_USERS_CREATE_ID}" />
+									<form action="{UM_CREATE_USER_CREATE}" method="post" name="um_user_create" enctype="multipart/form-data">
+										<input type="hidden" name="id" value="{UM_CREATE_USER_ID}" />
+									
 										<table class="table table-bordered">
 											<tr>
 												<td class="width20">{PHP.L.Username}</td>
-												<td class="width80">{UM_NAME}</td>
+												<td class="width80">{UM_CREATE_USER_NAME}</td>
 											</tr>
 											<tr>
 												<td class="">{PHP.L.Email}:</td>
-												<td class="">{UM_USERS_CREATE_EMAIL}</td>
+												<td class="">{UM_CREATE_USER_EMAIL}</td>
 											</tr>
 											<tr>
 												<td class="usergrouplist">{PHP.L.Maingroup}:</td>
-												<td class="usergrouplist">{UM_USERS_CREATE_GROUPS}</td>
+												<td class="usergrouplist">{UM_CREATE_USER_GROUPS}</td>
 											</tr>
 <!-- IF {UM_USERS_CREATE_SIGNATURE} -->	
 											<tr>
 												<td>{PHP.L.Signature}:</td>
-												<td>{UM_USERS_CREATE_SIGNATURE}</td>
+												<td>{UM_CREATE_USER_SIGNATURE}</td>
 											</tr>								
 <!-- ENDIF -->
 											<tr>
 												<td>{PHP.L.users_newpass}:</td>
 												<td>
-													{UM_USERS_DEFAULT_PASS}
-													<p class="small">{UM_USERS_HELPPASS}</p>
+													{UM_CREATE_USER_DEFAULT_PASS}
+													<p class="small">{UM_CREATE_USER_HELPPASS}</p>
 												</td>
 											</tr>
 											<tr>
 												<td>{PHP.L.users_confirmpass}:</td>
-												<td>{UM_USERS_PASSWORDREPEAT}</td>
+												<td>{UM_CREATE_USER_PASSWORDREPEAT}</td>
 											</tr>
+<!-- BEGIN:	EXTRAFLD -->
+					<tr> 
+						<td colspan="2">
+							<div class="block" style="margin: 0">
+								<h5>{PHP.L.um_req_extra}</h5>
+							</div>	
+						</td>
+					</tr>
+					<tr>
+						<td>{UM_USERS_EDIT_EXTRAFLD_TITLE}:</td>
+						<td>{UM_USERS_EDIT_EXTRAFLD}</td>
+					</tr>
+<!-- END: EXTRAFLD -->
 											<tr>
 												<td colspan="2"><button type="submit" class="btn btn-success">{UM_CREATE_USER}</button></td>
 											</tr>
@@ -86,30 +100,37 @@
 							
 							</div>
 						</div>
-<!-- BEGIN: UM_AJAXBLOCK -->
+
 <div id="MyajaxBlock">
+	<form action="{UM_CREATE_USER_DELETE_SEL}" method="post" name="um_user_update" enctype="multipart/form-data">
 						<div class="block">
 							<h5>{UM_LIST_TITLE}</h5>
 							<div class="wrapper">
 
 							    <table class="table table-bordered">                                
 								<tr>
-									<td class="coltop" class="">{UM_TOP_PM}</td>
-									<td class="coltop" class="">{UM_TOP_ACCESS}</td>
-									<td class="coltop" class="">{UM_TOP_NAME}</td>
-									<td class="coltop" class="">{PHP.L.Email}</td>
-									<td class="coltop" class="">{UM_TOP_GRPTITLE}</td>
-									<td class="coltop" class="">{UM_TOP_GRPLEVEL}</td>
-									<td class="coltop" class="">{UM_TOP_COUNTRY}</td>
-									<td class="coltop" class="">{UM_TOP_REGDATE}</td>
-									<td class="coltop" class="">{UM_TOP_DELETE}</td>
+									<td class="centerall">
+										<!-- IF {PHP.cfg.jquery} -->
+						<input name="allchek" class="checkbox" type="checkbox" value="" onclick="$('form[name=um_user_update] .checkbox').attr('checked', this.checked);" />
+										<!-- ENDIF -->
+									</td>										
+									<td class="centerall">{UM_TOP_PM}</td>
+									<td class="centerall">{UM_TOP_ACCESS}</td>
+									<td class="centerall">{UM_TOP_ID}</td>									
+									<td class="centerall">{UM_TOP_NAME}</td>
+									<td class="centerall">{PHP.L.Email}</td>
+									<td class="centerall" >{UM_TOP_GRPTITLE}</td>
+									<td class="centerall">{UM_TOP_GRPLEVEL}</td>
+									<td class="centerall">{UM_TOP_COUNTRY}</td>
+									<td class="centerall">{UM_TOP_REGDATE}</td>
+									<td class="centerall">{UM_TOP_DELETE}</td>
 								</tr>
 <!-- BEGIN: UM_ROW -->
-
 								<tr>
-
+									<td class="centerall"><input name="s[{UM_USER_ID}]" type="checkbox" class="checkbox" /></td>
 									<td class="centerall">{UM_ROW_PM}</td>
 									<td class="centerall">{UM_ROW_ACCESS}</td>
+									<td class="centerall">{UM_ROW_ID}</td>									
 									<td class="centerall">{UM_ROW_NAME}&nbsp</td>
 									<td class="centerall">{UM_ROW_EMAIL}</td>
 									<td class="centerall">{UM_ROW_MAINGRP}</td>
@@ -117,24 +138,21 @@
 									<td class="centerall">{UM_ROW_COUNTRYFLAG} {UM_ROW_COUNTRY}</td>
 									<td class="centerall">{UM_ROW_REGDATE}</td>
 									<td class="centerall">{UM_ROW_DELETE}</td>
-
 								</tr>
-								
 <!-- END: UM_ROW -->
 							</table>
 
 							</div>
 							</div>
-
-							
-
-<!-- BEGIN: UM_PAGENAV -->						
-						<div class="text-center">
-							<ul class="pagination">{UM_TOP_PAGEPREV}{UM_TOP_PAGNAV}{UM_TOP_PAGENEXT}</ul>
-						</div>
-<!-- END: UM_PAGENAV -->						
+		<button type="submit" class="btn btn-primary large" onclick="this.form.value=this.value">{PHP.L.um_delete_sel}</button>
+</form>			
+				
+	<div class="text-center">
+		<ul class="pagination">{UM_TOP_PAGEPREV}{UM_TOP_PAGNAV}{UM_TOP_PAGENEXT}</ul>
+	</div>
+						
 </div>
-<!-- END: UM_AJAXBLOCK -->
+
 <!-- END: CREATE -->
 
 <!-- BEGIN: UM_EDIT -->

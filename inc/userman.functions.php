@@ -21,6 +21,41 @@ require_once cot_incfile('users', 'module', 'resources');
 //Подключаем файл с ресурсами
 require_once cot_incfile('userman', 'plug', 'resources');
 
+
+
+/**
+ * Silently delete user 
+ * 
+ * @param $id  Id of user to be deleted   Superadmin can't be deleted using this function 
+ * @return  1 / 0 
+ */
+function um_delete_user( $user_id )
+{
+	global $db, $db_users, $db_groups_users;
+
+	if ( $user_id > 1 )
+	{
+		$u = $db->query("SELECT * FROM $db_users WHERE user_id=$user_id LIMIT 1")->fetch();
+		$sql = $db->delete($db_users, "user_id=$user_id");
+		$sql = $db->delete($db_groups_users, "gru_userid=$user_id");
+
+		foreach($cot_extrafields[$db_users] as $exfld)
+		{
+			cot_extrafield_unlinkfiles($urr['user_'.$exfld['field_name']], $exfld);
+		}
+
+		if (cot_module_active('pfs') && cot_import('um_edit_userdelpfs','P','BOL'))
+		{
+			require_once cot_incfile('pfs', 'module');
+			cot_pfs_deleteall($user_id);
+		}
+	}
+	else
+	{
+		return false;
+	}
+}
+
 /**
  *Generate massive from string  - groups list 
  * 

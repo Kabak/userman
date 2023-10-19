@@ -1,45 +1,78 @@
 <!-- BEGIN: MAIN -->
-			{FILE "{PHP.cfg.themes_dir}/{PHP.cfg.defaulttheme}/warnings.tpl"}
+{FILE "{PHP.cfg.themes_dir}/{PHP.cfg.defaulttheme}/warnings.tpl"}
 <!-- BEGIN: CREATE -->
 		<div class="block">
 			<h2 class="users">{UM_TITLE}</h2>
 
-			<form action="{UM_USERS_CREATE_SEND}" method="post" name="um_useredit" enctype="multipart/form-data">
-				<input type="hidden" name="id" value="{UM_USERS_CREATE_ID}" />
-                        <table class="cells">
-
-                            <tr>
-                                    	<td class="centerall">{PHP.L.Username}:{UM_NAME}</td>
-                                        <td class="centerall">{PHP.L.Email}:{UM_USERS_CREATE_EMAIL}</td>
-					<td align="right"><p>{PHP.L.users_newpass}:{UM_USERS_DEFAULT_PASS}</p>
-					<p>{PHP.L.users_confirmpass}:{UM_USERS_PASSWORDREPEAT}<p class="medium">{UM_USERS_HELPPASS}</p>
-					</td>
-			    </tr>
+<form action="{UM_CREATE_USER_CREATE}" method="post" name="um_user_create" enctype="multipart/form-data">
+	<input type="hidden" name="id" value="{UM_CREATE_USER_ID}" />
+                        
+		<table class="cells">
 		<tr>
-                                        <td >{PHP.L.Maingroup}:<br />&nbsp;{PHP.out.img_down}<br />{UM_USERS_CREATE_GROUPS}</td>
-		<!-- IF {UM_USERS_CREATE_SIGNATURE} -->			
-					<td>{PHP.L.Signature}:<br />{UM_USERS_CREATE_SIGNATURE}</td>
-                                        <td></td>
-		<!-- ENDIF -->
-		</tr>					
-				<tr>
-				    <td> <button type="submit" class="button special">{UM_CREATE_USER}</button></td>
-				    <td>
-				    <a href="{UM_YOURPROFILE}" class="button special">{UM_YOURPROFILE_TEXT}</a>
-				    <a href="{UM_SITECONFIG}" class="button special">{UM_SITECONFIG_TEXT}</a>
-				    </td>
-				    <td>
-				    <a href="{UM_USER_RIGHTS}" class="button special">{UM_USER_RIGHTS_TEXT}</a>
-				    <a href="{UM_EXTRA_FIELDS}" class="button special">{UM_EXTRA_FIELDS_TEXT}</a>
-				    </td>
-				</tr>
+			<td class="centerall">
+				<div class="block">
+					<h2 class="users">{PHP.L.um_createuser}</h2>
+					<p>{PHP.L.Username}:{UM_CREATE_USER_NAME}</p>
+					<p>{PHP.L.Email}:{UM_CREATE_USER_EMAIL}</p>
+					<p>{PHP.L.users_newpass}:{UM_CREATE_USER_DEFAULT_PASS}</p>
+					<p>{PHP.L.users_confirmpass}:{UM_CREATE_USER_PASSWORDREPEAT}<p class="small">{UM_CREATE_USER_HELPPASS}</p>
+				<!-- IF {UM_CREATE_USER_SIGNATURE} -->			
+					<p>{PHP.L.Signature}:{UM_CREATE_USER_SIGNATURE}</p>
+				<!-- ENDIF -->
+				</div>
+			</td>
 
-			</table>
+			<td>
+				<div class="block ">
+					<h2 class="users">
+						{PHP.L.Maingroup}</h2>
+						<br />{PHP.out.img_down}<br />{UM_CREATE_USER_GROUPS}
+				</div>
+			</td>
+			<td>
+				<div class="block">
+				<h2 class="users">{PHP.L.um_req_extra}</h2>
+				<!-- IF {UM_USERS_EDIT_EXTRAFLD} != 0 -->			
+				<!-- BEGIN:	EXTRAFLD -->
+						{UM_USERS_EDIT_EXTRAFLD_TITLE}:
+						{UM_USERS_EDIT_EXTRAFLD}
+				<!-- END: EXTRAFLD -->				
+				<!-- ELSE -->
+				{PHP.L.um_absent}
+				<!-- ENDIF -->
+				</div>
+			</td>
+			<!-- ENDIF -->
+		</tr>
+	
+		<tr>
+			<td colspan="3"> 
+				<button type="submit" class="btn btn-primary large">{UM_CREATE_USER}</button>
+				<hr>
+				<p>
+					<a href="{UM_YOURPROFILE}" class="button special large">{UM_YOURPROFILE_TEXT}</a>
+					<a href="{UM_SITECONFIG}" class="button special large">{UM_SITECONFIG_TEXT}</a>
+					<a href="{UM_USER_RIGHTS}" class="button special large">{UM_USER_RIGHTS_TEXT}</a>
+					<a href="{UM_EXTRA_FIELDS}" class="button special large">{UM_EXTRA_FIELDS_TEXT}</a>	
+				</p>				
+		</tr>
+	</table>
+</form>
+</div>
+
+
+<form action="{UM_CREATE_USER_DELETE_SEL}" method="post" name="um_user_update" enctype="multipart/form-data">			
 			<h2 class="users">{UM_LIST_TITLE}</h2>                                
-                        <table class="cells">                                
+			<table class="cells">                                
 				<tr>
+			<td class="coltop">
+		<!-- IF {PHP.cfg.jquery} -->
+		<input name="allchek" class="checkbox" type="checkbox" value="" onclick="$('form[name=um_user_update] .checkbox').attr('checked', this.checked);" />
+		<!-- ENDIF -->
+			</td>		
 					<td class="coltop" class="width5">{UM_TOP_PM}</td>
 					<td class="coltop" class="width5">{UM_TOP_ACCESS}</td>
+					<td class="coltop" class="width5">{UM_TOP_ID}</td>
 					<td class="coltop" class="width20">{UM_TOP_NAME}</td>
 					<td class="coltop" class="width20">{PHP.L.Email}</td>
 					<td class="coltop" class="width20">{UM_TOP_GRPTITLE}</td>
@@ -50,8 +83,10 @@
 				</tr>
 <!-- BEGIN: UM_ROW -->
 				<tr>
+					<td class="centerall"><input name="s[{UM_USER_ID}]" type="checkbox" class="checkbox" /></td>
 					<td class="centerall">{UM_ROW_PM}</td>
 					<td class="centerall">{UM_ROW_ACCESS}</td>
+					<td class="centerall">{UM_ROW_ID}</td>
 					<td class="centerall">{UM_ROW_NAME}&nbsp</td>
 					<td class="centerall">{UM_ROW_EMAIL}</td>
 					<td class="centerall">{UM_ROW_MAINGRP}</td>
@@ -62,21 +97,24 @@
 				</tr>
 <!-- END: UM_ROW -->
 			</table>
-			</form>
-	
-		</div>
+			<br>
+			<button type="submit" class="btn btn-primary large" onclick="this.form.value=this.value">{PHP.L.um_delete_sel}</button>
+</form>	
+<br>
 		<div class="block">
 			<h2 class="prefs">{PHP.L.Filters}</h2>
 			<form action="{UM_TOP_FILTER_ACTION}" method="post">
 				{UM_TOP_FILTERS_COUNTRY}
 				{UM_TOP_FILTERS_MAINGROUP}
 				{UM_TOP_FILTERS_GROUP}
-				{UM_TOP_FILTERS_SEARCH}<br />
-				<button type="submit" class="button special">{PHP.L.Submit}</button>
+				{UM_TOP_FILTERS_SEARCH}<br /><br />
+				<button type="submit" class="button special large">{PHP.L.Submit}</button>
 			</form>
 		</div>
 		<p class="paging"><span>{PHP.L.users_usersperpage}: {UM_TOP_MAXPERPAGE}</span><span>{PHP.L.users_usersinthissection}: {UM_TOP_TOTALUSERS}</span>{UM_TOP_PAGEPREV}{UM_TOP_PAGNAV}{UM_TOP_PAGENEXT}</p>
+
 <!-- END: CREATE -->
+
 <!-- BEGIN: UM_EDIT -->
 
 		<div class="block">
@@ -101,10 +139,14 @@
 						<td>{PHP.L.Country}:</td>
 						<td>{UM_EDIT_COUNTRY}</td>
 					</tr>
+<!-- IF {UM_USERS_EDIT_EXTRAFLD} != 0 -->
 					<tr>
-						<td>{UM_EDIT_LOCATION_TITLE}:</td>
-						<td>{UM_EDIT_LOCATION}</td>
-					</tr>					
+			<!-- BEGIN:	EXTRAFLD -->
+						<td>{UM_USERS_EDIT_EXTRAFLD_TITLE}:</td>
+						<td>{UM_USERS_EDIT_EXTRAFLD}</td>	
+			<!-- END: EXTRAFLD -->							
+					</tr>
+<!-- ENDIF -->										
 					<tr>
 						<td>{PHP.L.Timezone}:</td>
 						<td>{UM_EDIT_TIMEZONE}</td>
@@ -120,7 +162,7 @@
 					<!-- IF {UM_EDIT_AVATAR} -->
 					<tr>
 						<td>{PHP.L.Avatar}:</td>
-						<td>{UM_EDIT_AVATAR}</td>
+						<td><div class="avatar">{UM_EDIT_AVATAR}</div></td>
 					</tr>
 					<!-- ENDIF -->
 					<!-- IF {UM_EDIT_SIGNATURE} -->
@@ -293,7 +335,7 @@
 					<!-- IF {UM_PROFILE_AVATAR} -->
 					<tr>
 						<td>{PHP.L.Avatar}:</td>
-						<td>{UM_PROFILE_AVATAR}</td>
+						<td><div class="avatar">{UM_PROFILE_AVATAR}</div></td>
 					</tr>
 					<!-- ENDIF -->
 					<!-- IF {UM_PROFILE_PHOTO} -->

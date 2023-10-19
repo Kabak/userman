@@ -38,7 +38,7 @@ if ($id != 1){
 			cot_pfs_deleteall($id);
 		}
 // Update user temporary access DB		
-		include ('userman.users.edit.update.delete.php');		
+		include cot_incfile('userman', 'plug','users.edit.update.delete');	
 		
 		cot_message(um_build_string($L['user'],$name,$L['deleted']),'warning'); 		
 }

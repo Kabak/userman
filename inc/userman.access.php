@@ -104,6 +104,11 @@ if( $update == 'true'){
 	    $start_date = cot_selectbox_date(cot_date2stamp($sys['day']), 'short', 'um_access_start', cot_date('Y', $sys['now']) + 10, cot_date('Y', $sys['now']) - 5, false);
 	    $stop_date =  cot_selectbox_date(cot_date2stamp($sys['day']), 'short', 'um_access_stop', cot_date('Y', $sys['now']) + 10, cot_date('Y', $sys['now']) - 5, false);   
 	}
+
+	isset($act_user['start_reason']) ? $act_user['start_reason'] : $act_user['start_reason'] = "";
+	isset($act_user['stop_reason']) ? $act_user['stop_reason'] : $act_user['stop_reason'] = "";
+	isset($act_user['active']) ? $act_user['active'] : $act_user['active'] = false;
+
     $temp->assign(array(
 	'UM_TIME_ACCESS_TITLE' => $L['accesstilltime_title'],
 	'UM_TIME_ACCESS_SEND' => cot_url('admin','m=other&p=userman&a=access&update=true&id='.$a_user['user_id']),
@@ -114,13 +119,13 @@ if( $update == 'true'){
 	'UM_ACCESS_START_TEXT' => $L['access_start'],
 	'UM_ACCESS_START' => $start_date,
 	'UM_ACCESS_START_REASON_TEXT' => $L['access_start_reason_text'],
-	'UM_ACCESS_START_REASON' => cot_textarea('um_access_start_reason', isset($act_user['start_reason']), 4, 56, array('class' => $editor_class)),
+	'UM_ACCESS_START_REASON' => cot_textarea('um_access_start_reason', $act_user['start_reason'], 4, 56, array('class' => $editor_class)),
 	'UM_ACCESS_STOP_TEXT' => $L['access_stop'],
 	'UM_ACCESS_STOP' => $stop_date,
 	'UM_ACCESS_STOP_REASON_TEXT' => $L['access_stop_reason_text'],	
-	'UM_ACCESS_STOP_REASON' => cot_textarea('um_access_stop_reason', isset($act_user['stop_reason']), 4, 56, array('class' => $editor_class)),
+	'UM_ACCESS_STOP_REASON' => cot_textarea('um_access_stop_reason', $act_user['stop_reason'], 4, 56, array('class' => $editor_class)),
 	'UM_ACCESS_ACTIVE_TEXT' => $L['active'],
-	'UM_ACCESS_ACTIVE' => cot_radiobox(isset($act_user['active']), 'um_access_active', array(1, 0), array($L['Yes'], $L['No'])),
+	'UM_ACCESS_ACTIVE' => cot_radiobox($act_user['active'], 'um_access_active', array(1, 0), array($L['Yes'], $L['No'])),
 	'UM_ACCESS_LASTDATE' => cot_date('datetime_medium', $a_user['user_lastlog']),
 	'UM_ACCESS_GOBACK' => cot_url('admin','m=other&p=userman&a=edit&id='.$a_user['user_id'].'&u='.$a_user['user_name']),
 	'UM_ACCESS_GOBACK_TEXT' => $L['GoBackEdit'],

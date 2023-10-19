@@ -22,6 +22,10 @@ defined('COT_CODE') or die('Wrong URL');
 list($usr['auth_read'], $usr['auth_write'], $usr['isadmin']) = cot_auth('plug', 'userman');
 cot_block($usr['auth_read']);
 
+// Countries list
+require_once cot_langfile('countries', 'core');
+//
+require_once cot_incfile('forms');
 // Подключаем чтобы cot_generate_usertags корректно отрабатывал
 require_once cot_incfile('users', 'module');
 require_once cot_incfile('pm', 'module');
@@ -34,21 +38,10 @@ require_once cot_incfile('userman', 'plug', 'resources');
 
 $temp = new XTemplate(cot_tplfile('userman.admin', 'plug', true));
 
-// Из users.edit.php
-/*
-$sql1 = cot::$db->query("SELECT gru_groupid FROM $db_groups_users WHERE gru_userid=$id and gru_groupid=".COT_GROUP_SUPERADMINS);
-$sys['edited_istopadmin'] = ($sql1->rowCount()>0) ? TRUE : FALSE;
-$sys['user_istopadmin'] = cot_auth('admin', 'a', 'A');
-$sys['protecttopadmin'] = $sys['edited_istopadmin'] && !$sys['user_istopadmin'];
-if ($sys['protecttopadmin'])
-{
-	cot_die_message(930, TRUE);
-}
-*/
 // Edit name of user in userman form available if logпed user is admin
 $protected = !$usr['isadmin'] ? array('disabled' => 'disabled') : array();
 
-$editor_class = $cfg['users']['usertextimg'] ? 'minieditor' : '';
+$editor_class = Cot::$cfg['users']['usertextimg'] ? 'minieditor' : '';
 
 $id = cot_import('id', 'G', 'INT');
 $sort = cot_import('sort', 'G', 'ALP', 16);
@@ -62,18 +55,11 @@ $y = cot_import('y', 'P', 'TXT', 30);
 $sq = cot_import('sq', 'G', 'TXT', 8);
 $update = cot_import('update','G', 'TXT',8);
 
-if ($a == 'edit'){
-include cot_incfile('userman', 'plug','edit');
-}
-// Временный доступ пользователя к группам
-else if( $a == 'access'){
-include cot_incfile('userman', 'plug','access');
-}
-elseif( $a == 'profile')
+if ($a == 'edit'){ include cot_incfile('userman', 'plug','edit'); }
+else if( $a == 'access'){ include cot_incfile('userman', 'plug','access'); } // Temporary access user to groups
+else if( $a == 'profile'){ include cot_incfile('userman', 'plug','profile'); }
+else 
 {
-include cot_incfile('userman', 'plug','profile');
-}
-else {
 
 $users_sort_tags = array(
 	// columns in $db_users table
@@ -129,12 +115,14 @@ if ($sort == 'grplevel' || $sort == 'grpname' || $gm > 1)
 
 if( $f == 'search' && mb_strlen( is_null($y) ? "" : $y ) > 1)
 {
-// Поиск по Email
+
+// Search by Email
     if( preg_match('|.*@.*\..*|',$y) ){
 	$sq = $y;
 	$title[] = $L['Search']." '".htmlspecialchars($y)."'";
 	$where['email'] = "user_email LIKE '%".$db->prep($y)."%'";
-// Поиск по имени , если ввели не адрес почты	
+
+// Search by Name if no @ symbol was not entered
     } else{
 	$sq = $y;
 	$title[] = $L['Search']." '".htmlspecialchars($y)."'";
@@ -199,27 +187,20 @@ $pagenav = cot_pagenav('admin', $users_url_path, $d, $totalusers, $cfg['users'][
 
 $out['subtitle'] = $L['Users'];
 
-require_once cot_incfile('forms');
-require_once cot_langfile('countries', 'core');
 
-$countryfilters_titles = array();
-$countryfilters_values = array();
-foreach($cot_countries as $i => $x)
-{
-	if($i == '00')
-	{
-		$countryfilters_titles[] = $L['Country'];
-		$countryfilters_values[] = cot_url('admin','m=other&p=userman');
-		$countryfilters_titles[] = $L['None'];
-		$countryfilters_values[] = cot_url('admin', 'm=other&p=userman&f=country_00');
-	}
-	else
-	{
-		$countryfilters_titles[] = cot_cutstring($x,23);
-		$countryfilters_values[] = cot_url('admin', 'm=other&p=userman&f=country_'.$i);
-	}
+$countryfilters_titles = [];
+$countryfilters_values = [];
+$countryfilters_titles[] = $R['users_sel_def_l'].$L['Country'].$R['users_sel_def_r'];
+$countryfilters_values[] = cot_url('admin','m=other&p=userman');
+$countryfilters_titles[] = $L['None'];
+$countryfilters_values[] = cot_url('admin', 'm=other&p=userman&f=country_00');
+foreach ($cot_countries as $i => $x) {
+	$countryfilters_titles[] = cot_cutstring($x, 23);
+	$countryfilters_values[] = cot_url('admin', 'm=other&p=userman&f=country_'.$i);
 }
-$countryfilters = cot_selectbox($f, 'bycountry', $countryfilters_values, $countryfilters_titles, false, array('onchange' => 'redirect(this)'), '', true);
+$countryfilters = cot_selectbox(cot_url('admin', 'm=other&p=userman&f='.$f), 'bycountry', $countryfilters_values, $countryfilters_titles, false, array('onchange' => 'redirect(this)'), '', true);
+// $countryfilters = cot_selectbox(cot_url('admin', array('m' => 'other', 'p' => 'userman','f'=> $f)), 'bycountry', $countryfilters_values, $countryfilters_titles, false, array('onchange' => 'redirect(this)'), '', true);
+
 
 $grpfilters_titles = array($L['Maingroup']);
 $grpfilters_group_values = array(cot_url('admin','m=other&p=userman'));
@@ -229,11 +210,12 @@ foreach($cot_groups as $k => $i)
 	$grpfilters_titles[] = $cot_groups[$k]['name'];
 	$grpfilters_maingrp_values[] = cot_url('admin', 'm=other&p=userman&g='.$k, '', true);
 	$grpfilters_group_values[] = cot_url('admin', 'm=other&p=userman&gm='.$k, '', true);
-	}
-$maingrpfilters = cot_selectbox($g, 'bymaingroup', $grpfilters_maingrp_values, $grpfilters_titles, false, array('onchange' => 'redirect(this)'), '', true);
+}
+
+$maingrpfilters = cot_selectbox(cot_url('admin', array('m' => 'other', 'p' => 'userman', 'g' => $g) , '', true), 'bymaingroup', $grpfilters_maingrp_values, $grpfilters_titles, false, array('onchange' => 'redirect(this)'), '', true);
 
 $grpfilters_titles[0] = $L['Group'];
-$grpfilters = cot_selectbox($g, 'bygroupms', $grpfilters_group_values, $grpfilters_titles, false, array('onchange' => 'redirect(this)'), '', true);
+$grpfilters = cot_selectbox(cot_url('admin', array('m' => 'other', 'p' => 'userman', 'gm' => $gm) , '', true), 'bygroupms', $grpfilters_group_values, $grpfilters_titles, false, array('onchange' => 'redirect(this)'), '', true);
 
 $temp->assign(array(
 	'UM_TITLE' => cot_breadcrumbs($title, $cfg['homebreadcrumb']),
@@ -249,9 +231,6 @@ $temp->assign(array(
 	'UM_TOP_FILTERS_GROUP' => $grpfilters,
 	'UM_TOP_FILTERS_SEARCH' => cot_inputbox('text', 'y', $y, array('size' => 30, 'maxlength' => 30)),
 	'UM_TOP_FILTERS_SUBMIT' => cot_inputbox('submit', 'submit', $L['Search']),
-//	'UM_TOP_PM' => 'PM',
-//	'UM_TOP_DELETE' => $L['Delete'],
-//   	'UM_TOP_ACCESS' => $L['access_title'],
 ));
 
 $k = '_.__._';
@@ -277,12 +256,28 @@ foreach($cot_extrafields[$db_users] as $exfld)
 		'text' => $fieldtext
 	)));
 }
-// Создать нового пользователя
-if($a == 'create'){
-include cot_incfile('userman', 'plug','create');
+
+if		($a == 'create'){ include cot_incfile('userman', 'plug','create'); } // Create new user
+else if ($a == 'delete'){ include cot_incfile('userman', 'plug','delete'); } // Delete user
+else if ($a == 'silent_delete') // Silent delete user
+{ 
+	um_delete_user( $id ); 
+	cot_redirect(cot_url('admin', 'm=other&p=userman','', true));
 }
-else if ($a == 'delete'){
-include cot_incfile('userman', 'plug','delete');
+else if ($a == 'delete_selected') // Delete selected group
+{
+	if ( is_array($_POST['s'] ) )
+	{
+		cot_check_xp();
+		$s = cot_import('s', 'P', 'ARR');
+		
+		foreach ($s as $id => $v)
+		{
+			um_delete_user( $id );
+		}
+	}
+
+	cot_redirect(cot_url('admin', 'm=other&p=userman','', true));
 }
 
 $sql = $db->query("SELECT * FROM $db_users");
@@ -290,19 +285,20 @@ $rowcount = $sql->rowCount();
 cot_die($rowcount==0);
 
 $jj = 0;
-
 foreach ($sqlusers as $urr)
 {
 	$jj++;
 	$temp->assign(array(
-		'UM_ROW_ODDEVEN' => cot_build_oddeven($jj),
         'UM_ROW_NUM' => $jj,
 		'UM_ROW' => $urr
 	));
 	$temp->assign(cot_generate_um_usertags($urr, 'UM_ROW_'));
+
 // Генерируем вопрос по удалению пользователя
 	$url_del = cot_confirm_url('admin.php?m=other&p=userman&a=delete&id='.$urr['user_id']);
+	$url_del_noconf = cot_url('admin','m=other&p=userman&a=silent_delete&id='.$urr['user_id']);
 	$temp->assign('UM_ROW_DELETE', cot_rc_link($url_del, cot_rc('del_icon', array('alt' => $L['delete'], 'title' => $L['delete'])), array('class' => 'confirmLink')));
+	$temp->assign('UM_ROW_DELETE_NOCONF', cot_rc_link($url_del_noconf, cot_rc('del_icon', array('alt' => $L['delete'], 'title' => $L['delete']))));
 	$id = $urr['user_id'];
 	$sql_access = $db->query("SELECT * FROM $db_userman WHERE user_id=$id LIMIT 1");
 	if ( $sql_access->rowCount() != 0 ){
@@ -313,12 +309,82 @@ foreach ($sqlusers as $urr)
 		$temp->assign(array('UM_ROW_ACCESS' => cot_rc_link(cot_url('admin', 'm=other&p=userman&a=access&id='.$urr['user_id']),$R['access_off'])));	
         }
 	else{
-	    $temp->assign(array('UM_ROW_ACCESS' => ''));   
-	}
+	    	$temp->assign(array('UM_ROW_ACCESS' => ''));   
+		}
 	
-	$temp->parse('MAIN.CREATE.UM_AJAXBLOCK.UM_ROW');
+	$temp->assign(array( 'UM_USER_ID' => $urr['user_id'] ));
+
+	$temp->parse('MAIN.CREATE.UM_ROW');
        
 }
+
+// Extra fields for create new user  ++++++++++++++++++
+if (!empty(Cot::$extrafields[Cot::$db->users])) {
+    foreach (Cot::$extrafields[Cot::$db->users] as $exfld) 
+	{
+        $uname = strtoupper($exfld['field_name']);
+        $exfld_val = cot_build_extrafields( $exfld['field_name'], $exfld, '');
+        $exfld_title = cot_extrafield_title($exfld, 'user_');
+
+		if ( $exfld['field_required'] )
+		{
+			$temp->assign(array(
+				'UM_USERS_EDIT_EXTRAFLD' => $exfld_val,
+				'UM_USERS_EDIT_EXTRAFLD_TITLE' => $exfld_title
+			));
+			$temp->parse('MAIN.CREATE.EXTRAFLD');
+		}
+    }
+}
+// Extra fields ---------------------------------------
+
+
+// Create block +++++++++++++++++++++++++++++++++++++++
+
+// Reading default level for user creation
+$um_maingrp = $cfg['plugin']['userman']['defaultlevel'];
+$um_defaultgrp[0]['gru_groupid'] = $um_maingrp;
+
+// If no user in list
+ !isset($urr['user_id']) ? $urr['user_id'] = "" : $urr['user_id'];
+
+$temp->assign(array(
+	'UM_TITLE' => $L['title'],
+	'UM_SUBTITLE' => $L['subtitle'],
+	'UM_CREATE_USER_CREATE' => cot_url('admin', 'm=other&p=userman&a=create'),
+	'UM_CREATE_USER_DELETE_SEL' => cot_url('admin', 'm=other&p=userman&a=delete_selected'),
+	'UM_CREATE_USER_ID' => $urr['user_id'], 
+	'UM_CREATE_USER_NAME' => cot_inputbox('text', 'um_username', $cfg['plugin']['userman']['defaultname'], array('size' => 32, 'maxlength' => 100) + $protected),
+	'UM_CREATE_USER_EMAIL' => cot_inputbox('text', 'um_useremail', $cfg['plugin']['userman']['defaultemail'], array('size' => 32, 'maxlength' => 64)),
+	'UM_CREATE_USER_DEFAULT_PASS' => cot_inputbox('password', 'um_password1', $cfg['plugin']['userman']['defaultpass'], array('size' => 12, 'maxlength' => 32,'autocomplete' => 'off') + $protected),
+	'UM_CREATE_USER_PASSWORDREPEAT' => cot_inputbox('password', 'um_password2', $cfg['plugin']['userman']['defaultpass'], array('size' => 12, 'maxlength' => 32)),
+	'UM_CREATE_USER_MAINGRP' => cot_build_group($um_maingrp),
+	'UM_CREATE_USER_GROUPS' => cot_build_um_groupsms($um_defaultgrp, $usr['isadmin'], $um_maingrp),
+	'UM_CREATE_USER_SIGNATURE' => cot_textarea('um_sign',$cfg['plugin']['userman']['defaultsign'], 1, 2, array('class' => $editor_class)),	
+));
+if( $cfg['plugin']['userman']['defaultpass'] !='' )
+$temp->assign(array('UM_CREATE_USER_HELPPASS' => $L['um_defaultpass'].$cfg['plugin']['userman']['defaultpass'].' )'));
+
+// Buttons
+$temp->assign(array(
+	'UM_CREATE_USER' => $L['um_createuser'],
+	'UM_YOURPROFILE' => cot_url('admin','m=other&p=userman&a=profile'),
+	'UM_YOURPROFILE_TEXT' => $L['yourprofile'],
+	'UM_SITECONFIG' => cot_url('admin','m=config&n=edit&o=module&p=users'),
+	'UM_SITECONFIG_TEXT' => $L['site_config'],
+	'UM_USER_RIGHTS' => cot_url('admin','m=rightsbyitem&ic=users&io=a'),
+	'UM_USER_RIGHTS_TEXT' => $L['user_rights'],
+	'UM_EXTRA_FIELDS' => cot_url('admin','m=extrafields&n=cot_users'),
+	'UM_EXTRA_FIELDS_TEXT' => $L['extra_fields']
+));
+	
+$temp->assign(array(         
+	'UM_LIST_TITLE' => $L['users_list'],
+	'UM_TOP_DELETE' => $L['Delete'],
+	'UM_TOP_ACCESS' => $L['access_title'],  
+	'UM_TOP_PM' => 'PM',    
+	'UM_TOP_ID' => 'User ID',
+));
 
 $temp->assign(array(
 	'UM_TOP_PAGNAV' => $pagenav['main'],
@@ -326,13 +392,14 @@ $temp->assign(array(
 	'UM_TOP_PAGENEXT' => $pagenav['next'],
 ));
 $temp->parse('MAIN.CREATE.UM_AJAXBLOCK.UM_PAGENAV');
-$temp->assign(array(         
-        'UM_LIST_TITLE' => $L['users_list'],
-    	'UM_TOP_DELETE' => $L['Delete'],
-    	'UM_TOP_ACCESS' => $L['access_title'],  
-    	'UM_TOP_PM' => 'PM',    
-));
-	$temp->parse('MAIN.CREATE.UM_AJAXBLOCK');
+
+$temp->parse('MAIN.CREATE.UM_AJAXBLOCK');
+
+// Create block ---------------------------------------
+
+$temp->parse('MAIN.CREATE');
+
+
 if ( COT_AJAX ){
 	$temp->out('MAIN.CREATE.UM_AJAXBLOCK.UM_ROW');
 	$temp->out('MAIN.CREATE.UM_AJAXBLOCK');        
@@ -341,42 +408,6 @@ goto END;
 }
 // ---------------------------------------------------------------------------------------------------------------------------------------
 
-$sufixemail = $cfg['plugin']['userman']['defaultemail'];
-
-// Читаем из конфигурации уровень новому пользователя по умолчанию
-$um_maingrp = $cfg['plugin']['userman']['defaultlevel'];
-$um_defaultgrp[0]['gru_groupid'] = $um_maingrp;
-
-// If no user in list
-if ( !isset($urr['user_id']) )
-	$urr['user_id'] = "";
-
-$temp->assign(array(    'UM_SUBTITLE' => $L['subtitle'],
-                        'UM_TITLE' => $L['title'],
-//                        'UM_LIST_TITLE' => $L['users_list'],    
-			            'UM_CREATE_USER' => $L['createuser'],
-						'UM_USERS_CREATE_ID' => $urr['user_id'], 
-            			'UM_NAME' => cot_inputbox('text', 'um_username', $cfg['plugin']['userman']['defaultname'], array('size' => 32, 'maxlength' => 100) + $protected),
-            			'UM_USERS_CREATE_EMAIL' => cot_inputbox('text', 'um_useremail', $sufixemail, array('size' => 32, 'maxlength' => 64)),
-            			'UM_USERS_CREATE_MAINGRP' => cot_build_group($um_maingrp),
-            			'UM_USERS_CREATE_GROUPS' => cot_build_um_groupsms($um_defaultgrp, $usr['isadmin'], $um_maingrp),
-						'UM_USERS_CREATE_SIGNATURE' => cot_textarea('um_sign',$cfg['plugin']['userman']['defaultsign'], 12, 56, array('class' => $editor_class)),
-						'UM_USERS_DEFAULT_PASS' => cot_inputbox('password', 'um_password1', $cfg['plugin']['userman']['defaultpass'], array('size' => 12, 'maxlength' => 32,'autocomplete' => 'off') + $protected),
-						'UM_USERS_PASSWORDREPEAT' => cot_inputbox('password', 'um_password2', $cfg['plugin']['userman']['defaultpass'], array('size' => 12, 'maxlength' => 32)),
-						'UM_USERS_CREATE_SEND' => cot_url('admin', 'm=other&p=userman&a=create'),
-                        'UM_YOURPROFILE' => cot_url('admin','m=other&p=userman&a=profile'),
-                        'UM_YOURPROFILE_TEXT' => $L['yourprofile'],
-						'UM_SITECONFIG' => cot_url('admin','m=config&n=edit&o=module&p=users'),
-						'UM_SITECONFIG_TEXT' => $L['site_config'],
-						'UM_USER_RIGHTS' => cot_url('admin','m=rightsbyitem&ic=users&io=a'),
-						'UM_USER_RIGHTS_TEXT' => $L['user_rights'],
-						'UM_EXTRA_FIELDS' => cot_url('admin','m=extrafields&n=cot_users'),
-						'UM_EXTRA_FIELDS_TEXT' => $L['extra_fields']
-    			));
-if( $cfg['plugin']['userman']['defaultpass'] !='' )
-    $temp->assign(array('UM_USERS_HELPPASS' => $L['um_defaultpass'].$cfg['plugin']['userman']['defaultpass'].' )'));
-
-    $temp->parse('MAIN.CREATE'); 
 }
 $adminhelp = $L['userman_help_main'];
 cot_display_messages($temp);

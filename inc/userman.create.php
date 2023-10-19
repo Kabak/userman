@@ -37,7 +37,6 @@ global $temp;
 		$umuser['user_'.$exfld['field_name']] = cot_import_extrafields('ruser'.$exfld['field_name'], $exfld);
 	}
 
-	$umuser['user_location'] == null ? $umuser['user_location'] = '---' : $umuser['user_location'];
 	$umuser['user_text'] == null ? $umuser['user_text']  = '' : $umuser['user_text'];
 
 	$user_exists = (bool)$db->query("SELECT user_id FROM $db_users WHERE user_name = ? LIMIT 1", array($umuser['user_name']))->fetch();
@@ -65,7 +64,7 @@ if (!cot_error_found())
 		$umuser['user_passfunc'] = empty($cfg['hashfunc']) ? 'sha256' : $cfg['hashfunc'];
 		$umuser['user_password'] = cot_hash($rpassword1, $umuser['user_passsalt'], $umuser['user_passfunc']);
 
-		$userid = cot_add_user($ruser,$umuser['user_email'],$umuser['user_name'],$rpassword1,$umuser['user_maingrp'],$sendemail =false );
+		$userid = cot_add_user($umuser,$umuser['user_email'],$umuser['user_name'],$rpassword1,$umuser['user_maingrp'],$sendemail =false );
 		// Вносим в базу все данные о новом пользователе.
 		$db->update($db_users, $umuser, 'user_id='.$userid);
 
