@@ -26,9 +26,12 @@ cot_block($usr['isadmin']);
 require_once cot_langfile('countries', 'core');
 //
 require_once cot_incfile('forms');
-// Подключаем чтобы cot_generate_usertags корректно отрабатывал
+
 require_once cot_incfile('users', 'module');
-require_once cot_incfile('pm', 'module');
+
+if ( cot_module_active('pm') )
+	require_once cot_incfile('pm', 'module');
+
 //Подключаем чтобы строковые переменные из lang файла были доступны как переменные
 require_once cot_langfile('userman', 'plug');
 // Подключаем, если есть файл в подкаталоге плагина с функциями вынесеными в отдельный файл functions.имяплагина.php

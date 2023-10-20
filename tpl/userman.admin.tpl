@@ -8,6 +8,15 @@
 	<input type="hidden" name="id" value="{UM_CREATE_USER_ID}" />
                         
 		<table class="cells">
+			<tr>
+				<td colspan="3"> 
+					<p>
+						<a href="{UM_YOURPROFILE}" class="button special large">{UM_YOURPROFILE_TEXT}</a>
+						<a href="{UM_SITECONFIG}" class="button special large">{UM_SITECONFIG_TEXT}</a>
+						<a href="{UM_USER_RIGHTS}" class="button special large">{UM_USER_RIGHTS_TEXT}</a>
+						<a href="{UM_EXTRA_FIELDS}" class="button special large">{UM_EXTRA_FIELDS_TEXT}</a>	
+					</p>				
+			</tr>			
 		<tr>
 			<td class="centerall">
 				<div class="block">
@@ -44,17 +53,11 @@
 			</td>
 			<!-- ENDIF -->
 		</tr>
-	
 		<tr>
+			<hr>
 			<td colspan="3"> 
 				<button type="submit" class="btn btn-primary large">{UM_CREATE_USER}</button>
-				<hr>
-				<p>
-					<a href="{UM_YOURPROFILE}" class="button special large">{UM_YOURPROFILE_TEXT}</a>
-					<a href="{UM_SITECONFIG}" class="button special large">{UM_SITECONFIG_TEXT}</a>
-					<a href="{UM_USER_RIGHTS}" class="button special large">{UM_USER_RIGHTS_TEXT}</a>
-					<a href="{UM_EXTRA_FIELDS}" class="button special large">{UM_EXTRA_FIELDS_TEXT}</a>	
-				</p>				
+			</td>
 		</tr>
 	</table>
 </form>
