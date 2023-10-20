@@ -20,7 +20,7 @@ Hooks=tools
 defined('COT_CODE') or die('Wrong URL');
 
 list($usr['auth_read'], $usr['auth_write'], $usr['isadmin']) = cot_auth('plug', 'userman');
-cot_block($usr['auth_read']);
+cot_block($usr['isadmin']);
 
 // Countries list
 require_once cot_langfile('countries', 'core');
@@ -194,7 +194,8 @@ $countryfilters_titles[] = $R['users_sel_def_l'].$L['Country'].$R['users_sel_def
 $countryfilters_values[] = cot_url('admin','m=other&p=userman');
 $countryfilters_titles[] = $L['None'];
 $countryfilters_values[] = cot_url('admin', 'm=other&p=userman&f=country_00');
-foreach ($cot_countries as $i => $x) {
+foreach ($cot_countries as $i => $x) 
+{
 	$countryfilters_titles[] = cot_cutstring($x, 23);
 	$countryfilters_values[] = cot_url('admin', 'm=other&p=userman&f=country_'.$i);
 }
@@ -338,9 +339,7 @@ if (!empty(Cot::$extrafields[Cot::$db->users])) {
 }
 // Extra fields ---------------------------------------
 
-
 // Create block +++++++++++++++++++++++++++++++++++++++
-
 // Reading default level for user creation
 $um_maingrp = $cfg['plugin']['userman']['defaultlevel'];
 $um_defaultgrp[0]['gru_groupid'] = $um_maingrp;
@@ -382,9 +381,13 @@ $temp->assign(array(
 	'UM_LIST_TITLE' => $L['users_list'],
 	'UM_TOP_DELETE' => $L['Delete'],
 	'UM_TOP_ACCESS' => $L['access_title'],  
-	'UM_TOP_PM' => 'PM',    
 	'UM_TOP_ID' => 'User ID',
 ));
+
+// If no PM module
+if ( cot_module_active('pm') )
+$temp->assign(array('UM_TOP_PM' => 'PM'));
+
 
 $temp->assign(array(
 	'UM_TOP_PAGNAV' => $pagenav['main'],

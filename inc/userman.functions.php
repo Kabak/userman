@@ -36,6 +36,7 @@ function um_delete_user( $user_id )
 	if ( $user_id > 1 )
 	{
 		$u = $db->query("SELECT * FROM $db_users WHERE user_id=$user_id LIMIT 1")->fetch();
+		$deleted_name = $u['user_name'];
 		$sql = $db->delete($db_users, "user_id=$user_id");
 		$sql = $db->delete($db_groups_users, "gru_userid=$user_id");
 
@@ -52,8 +53,9 @@ function um_delete_user( $user_id )
 	}
 	else
 	{
-		return false;
+		return "";
 	}
+	return $deleted_name;
 }
 
 /**

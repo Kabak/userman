@@ -35,7 +35,7 @@ defined('COT_CODE') or die('Wrong URL');
   $L['userman'] = 'Userman plugin <br />';
 	
   $L['um_absent'] = 'отсутствуют';
-  $L['um_req_extra'] = 'Обязательные экстраполя';
+  $L['um_req_extra'] = 'Обязательные экстрaполя';
   $L['um_delete_sel'] = 'Удалить выбранных ( без подтверждения! )';
   $L['um_createuser'] = 'Создать пользователя';
   $L['um_defaultpass'] = '( пароль по умолчанию: ';

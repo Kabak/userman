@@ -70,7 +70,9 @@
 		<input name="allchek" class="checkbox" type="checkbox" value="" onclick="$('form[name=um_user_update] .checkbox').attr('checked', this.checked);" />
 		<!-- ENDIF -->
 			</td>		
+<!-- IF {UM_TOP_PM} -->			
 					<td class="coltop" class="width5">{UM_TOP_PM}</td>
+<!-- ENDIF -->
 					<td class="coltop" class="width5">{UM_TOP_ACCESS}</td>
 					<td class="coltop" class="width5">{UM_TOP_ID}</td>
 					<td class="coltop" class="width20">{UM_TOP_NAME}</td>
@@ -84,7 +86,9 @@
 <!-- BEGIN: UM_ROW -->
 				<tr>
 					<td class="centerall"><input name="s[{UM_USER_ID}]" type="checkbox" class="checkbox" /></td>
+<!-- IF {UM_ROW_PM} -->
 					<td class="centerall">{UM_ROW_PM}</td>
+<!-- ENDIF -->					
 					<td class="centerall">{UM_ROW_ACCESS}</td>
 					<td class="centerall">{UM_ROW_ID}</td>
 					<td class="centerall">{UM_ROW_NAME}&nbsp</td>

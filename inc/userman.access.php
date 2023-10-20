@@ -109,7 +109,7 @@ if( $update == 'true'){
 	isset($act_user['stop_reason']) ? $act_user['stop_reason'] : $act_user['stop_reason'] = "";
 	isset($act_user['active']) ? $act_user['active'] : $act_user['active'] = false;
 
-    $temp->assign(array(
+	$temp->assign(array(
 	'UM_TIME_ACCESS_TITLE' => $L['accesstilltime_title'],
 	'UM_TIME_ACCESS_SEND' => cot_url('admin','m=other&p=userman&a=access&update=true&id='.$a_user['user_id']),
 	'UM_ACCESS_ID' => $a_user['user_id'], 
