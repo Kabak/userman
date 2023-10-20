@@ -34,7 +34,7 @@ global $temp;
 	// Extra fields
 	foreach($cot_extrafields[$db_users] as $exfld)
 	{
-		$umuser['user_'.$exfld['field_name']] = cot_import_extrafields('ruser'.$exfld['field_name'], $exfld);
+		$umuser['user_'.$exfld['field_name']] = cot_import_extrafields($exfld['field_name'], $exfld);
 	}
 
 	$umuser['user_text'] == null ? $umuser['user_text']  = '' : $umuser['user_text'];
