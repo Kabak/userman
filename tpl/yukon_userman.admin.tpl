@@ -115,7 +115,7 @@
 										<!-- ENDIF -->
 									</td>										
 <!-- IF {UM_TOP_PM} -->			
-									<td class="coltop" class="width5">{UM_TOP_PM}</td>
+									<td class="centerall">{UM_TOP_PM}</td>
 <!-- ENDIF -->
 									<td class="centerall">{UM_TOP_ACCESS}</td>
 									<td class="centerall">{UM_TOP_ID}</td>									
