@@ -95,7 +95,7 @@ if( $update == 'true'){
     }
 }
 // Устанавливаем даты в шаблоне в соответствии с БД временного доступа
-	if($no_access_record == FALSE ){
+	if($no_access_record == false ){
 	    $start_date = cot_selectbox_date(cot_date2stamp($act_user['start_date']), 'short', 'um_access_start', cot_date('Y', $sys['now']) +10, cot_date('Y', $sys['now']) - 5, false);
 	    $stop_date =  cot_selectbox_date(cot_date2stamp($act_user['stop_date']), 'short', 'um_access_stop', cot_date('Y', $sys['now']) + 10, cot_date('Y', $sys['now']) - 5, false);	    
 	}

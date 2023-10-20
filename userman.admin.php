@@ -265,7 +265,7 @@ if		($a == 'create'){ include cot_incfile('userman', 'plug','create'); } // Crea
 else if ($a == 'delete'){ include cot_incfile('userman', 'plug','delete'); } // Delete user
 else if ($a == 'silent_delete') // Silent delete user
 { 
-	um_delete_user( $id ); 
+	include cot_incfile('userman', 'plug','delete');
 	cot_redirect(cot_url('admin', 'm=other&p=userman','', true));
 }
 else if ($a == 'delete_selected') // Delete selected group
@@ -277,7 +277,7 @@ else if ($a == 'delete_selected') // Delete selected group
 		
 		foreach ($s as $id => $v)
 		{
-			um_delete_user( $id );
+			include cot_incfile('userman', 'plug','delete');
 		}
 	}
 

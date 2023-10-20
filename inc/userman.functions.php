@@ -21,12 +21,29 @@ require_once cot_incfile('users', 'module', 'resources');
 //Подключаем файл с ресурсами
 require_once cot_incfile('userman', 'plug', 'resources');
 
+/**
+ * Delete user from temporary access dbase if user inlist
+ * 
+ * @param $user_id  Id of user to be deleted   Superadmin can't be deleted using this function 
+ * @return  1 / 0 
+ */
+function um_delete_user_access( $user_id )
+{
+	global $db, $db_userman;
 
+	$sql = $db->query("SELECT * FROM $db_userman WHERE user_id=$user_id LIMIT 1");
+	$user_found = $sql->fetch();
+	// Проверяем есть ли пользователь в базе с поднятием уровня на время
+	if ( $user_found )
+	{
+		$sql1 = $db->delete($db_userman, 'user_id='.$user_id );
+	}
+}
 
 /**
  * Silently delete user 
  * 
- * @param $id  Id of user to be deleted   Superadmin can't be deleted using this function 
+ * @param $user_id  Id of user to be deleted   Superadmin can't be deleted using this function 
  * @return  1 / 0 
  */
 function um_delete_user( $user_id )
