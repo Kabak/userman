@@ -6,7 +6,7 @@
 
 /**
  * @package userman
- * @version 8.1.0
+ * @version 8.1.1
  * @author Aliaksei Kobak
  * @copyright Copyright (c) Aliaksei Kobak 2013 - 2023
  * @license BSD
@@ -46,6 +46,23 @@ if( $update == 'true')
 // Чтобы нельзя было удалить главного админа
 	if ($userdelete && $id != 1)
 	{
+		// Avatar & photo delete
+		if ( cot_plugin_active('userimages') )
+		{
+			$userimages = cot_userimages_config_get();
+			foreach ($userimages as $code => $settings)
+			{
+				$sql = Cot::$db->query("SELECT user_" . Cot::$db->prep($code) . " FROM ".Cot::$db->users." WHERE user_id=" . $id);
+				if ($image = $sql->fetchColumn())
+				{
+					if (file_exists($image))
+					{
+						unlink($image);
+					}
+				}
+			}			
+		}
+
 // Получаем имя удаляемого для сообщения  Пользователь с именем - ххх   удалён. 	    
 		$u = $db->query("SELECT * FROM $db_users WHERE user_id=$id LIMIT 1")->fetch();
 		$name = $u['user_name'];
@@ -75,7 +92,13 @@ if( $update == 'true')
 	else if ($userdelete && $id == 1){
 	        cot_error($L['deldenied']);   
 	}
-	    
+	  
+	if ( cot_plugin_active('userimages') )
+	{
+		require_once cot_incfile('userimages', 'plug');
+		require_once cot_incfile('uploads');
+		cot_userimages_process_uploads($id);
+	}
 
 	$euser['user_name'] = cot_import('um_edit_username','P','TXT');
 	$euser['user_maingrp'] = cot_import('um_usermaingrp','P','INT');
@@ -240,6 +263,13 @@ if (cot_module_active('pm'))
 }
 
 $delete_pfs = cot_module_active('pfs') ? cot_checkbox(false, 'um_edit_userdelpfs', $L['PFS']) : '';
+	
+if ( cot_plugin_active('userimages') )
+{
+	require_once cot_incfile('userimages', 'plug');
+	require_once cot_incfile('userimages', 'plug', 'resources');
+	$temp->assign( cot_um_userimages_tags($urr, 'UM_EDIT_'));
+}
 
     $temp->assign(array(
     'UM_EDIT_TITLE' => $L['title'],

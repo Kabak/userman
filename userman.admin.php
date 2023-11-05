@@ -11,7 +11,7 @@ Hooks=tools
 
 /**
  * @package userman
- * @version 8.1.0
+ * @version 8.1.1
  * @author Aliaksei Kobak
  * @copyright Copyright (c) Aliaksei Kobak 2013 - 2023
  * @license BSD
@@ -376,7 +376,7 @@ $temp->assign(array(
 	'UM_SITECONFIG_TEXT' => $L['site_config'],
 	'UM_USER_RIGHTS' => cot_url('admin','m=rightsbyitem&ic=users&io=a'),
 	'UM_USER_RIGHTS_TEXT' => $L['user_rights'],
-	'UM_EXTRA_FIELDS' => cot_url('admin','m=extrafields&n=cot_users'),
+	'UM_EXTRA_FIELDS' => cot_url('admin','m=extrafields&n='.$db_users),
 	'UM_EXTRA_FIELDS_TEXT' => $L['extra_fields']
 ));
 	

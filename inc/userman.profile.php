@@ -6,7 +6,7 @@
 
 /**
  * @package userman
- * @version 8.1.0
+ * @version 8.1.1
  * @author Aliaksei Kobak
  * @copyright Copyright (c) Aliaksei Kobak 2013 - 2023
  * @license BSD

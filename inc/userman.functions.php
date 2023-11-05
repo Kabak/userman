@@ -3,7 +3,7 @@
  * Usermanager Functions
  *
  * @package userman
- * @version 8.1.0
+ * @version 8.1.1
  * @author Aliaksei Kobak
  * @copyright Copyright (c) Aliaksei Kobak 2013 - 2023
  * @license BSD
@@ -662,3 +662,53 @@ function cot_build_um_flag($flag)
 }
 
 
+/**
+ * Returns UserImages tags for coTemplate
+ *
+ * @param array $user_data User info array
+ * @param string $tag_prefix Prefix for tags
+ * @return array
+ */
+function cot_um_userimages_tags($user_data, $tag_prefix='')
+{
+	global $m;
+
+	$temp_array = array();
+	$userimages = cot_userimages_config_get();
+	$uid = $user_data['user_id'];
+	$usermode = $m == 'edit' || ($uid != Cot::$usr['id']);
+
+	foreach($userimages as $code => $settings)
+	{
+		if (!empty($user_data['user_'.$code]))
+		{
+			$delete_params = 'r=userimages'
+				.'&a=delete'
+				.'&uid='.($usermode ? $uid : '')
+				.'&m='.$m
+				.'&code='.$code
+				.'&'.cot_xg();
+			$userimg_existing = cot_rc('userimg_existing', array(
+				'url_file' => $user_data['user_'.$code],
+				'url_delete' => cot_url('plug', $delete_params)
+			));
+		}
+		else
+		{
+			$userimg_existing = '';
+		}
+		$userimg_selectfile = cot_rc('userimg_selectfile', array(
+			'form_input' => cot_inputbox('file', $usermode ? $code.':'.$uid : $code, '', array('size' => 24))
+		));
+		$userimg_html = cot_rc('userimg_html', array(
+			'code' => $usermode ? $code.' uid_'.$uid: $code,
+			'existing' => $userimg_existing,
+			'selectfile' => $userimg_selectfile
+		));
+
+		$temp_array[$tag_prefix . strtoupper($code)] = $userimg_html;
+		$temp_array[$tag_prefix . strtoupper($code) . '_SELECT'] = $userimg_selectfile;
+	}
+
+	return $temp_array;
+}
