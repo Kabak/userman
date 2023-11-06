@@ -118,9 +118,9 @@
 									<td class="centerall">{UM_TOP_PM}</td>
 <!-- ENDIF -->
 									<td class="centerall">{UM_TOP_ACCESS}</td>
-									<td class="centerall">{UM_TOP_ID}</td>									
+									<td class="centerall">{UM_TOP_USERID}</td>									
 									<td class="centerall">{UM_TOP_NAME}</td>
-									<td class="centerall">{PHP.L.Email}</td>
+									<td class="centerall">{UM_TOP_EMAIL}</td>
 									<td class="centerall" >{UM_TOP_GRPTITLE}</td>
 									<td class="centerall">{UM_TOP_GRPLEVEL}</td>
 									<td class="centerall">{UM_TOP_COUNTRY}</td>
@@ -182,10 +182,14 @@
 										<td>{PHP.L.Country}:</td>
 										<td>{UM_EDIT_COUNTRY}</td>
 									</tr>
+									<!-- IF {UM_EDIT_EXTRAFLD} != 0 -->
 									<tr>
-										<td>{UM_EDIT_LOCATION_TITLE}:</td>
-										<td>{UM_EDIT_LOCATION}</td>
-									</tr>									
+										<!-- BEGIN:	EXTRAFLD -->
+											<td>{UM_EDIT_EXTRAFLD_TITLE}:</td>
+											<td>{UM_EDIT_EXTRAFLD}</td>	
+										<!-- END: EXTRAFLD -->							
+									</tr>
+									<!-- ENDIF -->										
 									<tr>
 										<td>{PHP.L.Timezone}:</td>
 										<td>{UM_EDIT_TIMEZONE}</td>
@@ -355,10 +359,14 @@
 									<td>{PHP.L.Country}:</td>
 									<td>{UM_PROFILE_COUNTRY}</td>
 								</tr>
+								<!-- IF {UM_PROFILE_EXTRAFLD} != 0 -->
 								<tr>
-									<td>{UM_PROFILE_LOCATION_TITLE}:</td>
-									<td>{UM_PROFILE_LOCATION}</td>
-								</tr>								
+								<!-- BEGIN:	EXTRAFLD -->
+									<td>{UM_PROFILE_EXTRAFLD_TITLE}:</td>
+									<td>{UM_PROFILE_EXTRAFLD}</td>	
+								<!-- END: EXTRAFLD -->							
+								</tr>
+								<!-- ENDIF -->									
 								<tr>
 									<td>{PHP.L.Timezone}:</td>
 									<td>{UM_PROFILE_TIMEZONE}</td>

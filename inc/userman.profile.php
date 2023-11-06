@@ -155,6 +155,13 @@ $profile_form_email = cot_inputbox('text', 'ruseremail', $urr['user_email'], arr
 
 $editor_class = $cfg['users']['usertextimg'] ? 'minieditor' : '';
 
+if ( cot_plugin_active('userimages') )
+{
+	require_once cot_incfile('userimages', 'plug');
+	require_once cot_incfile('userimages', 'plug', 'resources');
+	$temp->assign( cot_um_userimages_tags($urr, 'UM_PROFILE_'));
+}
+
 $temp->assign(array(
     'UM_PROFILE_TITLE' => $L['title'],
 	'UM_PROFILE_SUBTITLE' => $L['pro_subtitle'],
@@ -187,29 +194,23 @@ $temp->assign(array(
 	'UM_PROFILE_GOBACK' => cot_url('admin','m=other&p=userman'),
 	'UM_PROFILE_GOBACK_TEXT' => $L['GoBack']    
 ));
-// Extra fields
-foreach($cot_extrafields[$db_users] as $exfld)
-{
-	$tag = strtoupper($exfld['field_name']);
-	$temp->assign(array(
-		'UM_PROFILE_'.$tag => cot_build_extrafields('ruser'.$exfld['field_name'], $exfld, $urr['user_'.$exfld['field_name']]),
-		'UM_PROFILE_'.$tag.'_TITLE' => isset($L['user_'.$exfld['field_name'].'_title']) ? $L['user_'.$exfld['field_name'].'_title'] : $exfld['field_description']
-	));
-}
-    if(defined('COT_PM'))
+
+if(cot_module_active('pm'))
 	{
     	$temp->assign(array(
 		'UM_PROFILE_PMNOTIFY' => cot_radiobox($urr['user_pmnotify'], 'um_profilepmnotify', array(1, 0), array($L['Yes'], $L['No'])),
 		));
     }
+
 // Extra fields
 foreach($cot_extrafields[$db_users] as $exfld)
 {
 	$tag = strtoupper($exfld['field_name']);
 	$temp->assign(array(
-	'USERS_PROFILE_'.$tag => cot_build_extrafields('ruser'.$exfld['field_name'], $exfld, $urr['user_'.$exfld['field_name']]),
-	'USERS_PROFILE_'.$tag.'_TITLE' => isset($L['user_'.$exfld['field_name'].'_title']) ? $L['user_'.$exfld['field_name'].'_title'] : $exfld['field_description']
+	'UM_PROFILE_EXTRAFLD' => cot_build_extrafields('ruser'.$exfld['field_name'], $exfld, $urr['user_'.$exfld['field_name']]),
+	'UM_PROFILE_EXTRAFLD_TITLE' => isset($L['user_'.$exfld['field_name'].'_title']) ? $L['user_'.$exfld['field_name'].'_title'] : $exfld['field_description']
 	));
+	$temp->parse('MAIN.UM_PROFILE.EXTRAFLD');
 }
 
 if ($cfg['users']['useremailchange'])

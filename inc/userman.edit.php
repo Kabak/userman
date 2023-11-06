@@ -302,9 +302,10 @@ foreach($cot_extrafields[$db_users] as $exfld)
 {
 	$tag = strtoupper($exfld['field_name']);
 	$temp->assign(array(
-		'UM_EDIT_'.$tag => cot_build_extrafields('ruser'.$exfld['field_name'],  $exfld, $urr['user_'.$exfld['field_name']]),
-		'UM_EDIT_'.$tag.'_TITLE' => isset($L['user_'.$exfld['field_name'].'_title']) ? $L['user_'.$exfld['field_name'].'_title'] : $exfld['field_description']
+		'UM_EDIT_EXTRAFLD' => cot_build_extrafields('ruser'.$exfld['field_name'],  $exfld, $urr['user_'.$exfld['field_name']]),
+		'UM_EDIT_EXTRAFLD_TITLE' => isset($L['user_'.$exfld['field_name'].'_title']) ? $L['user_'.$exfld['field_name'].'_title'] : $exfld['field_description']
 	));
+	$temp->parse('MAIN.UM_EDIT.EXTRAFLD');
 }
 
 if (cot_module_active('pm'))

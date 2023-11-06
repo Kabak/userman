@@ -66,6 +66,8 @@ else
 
 $users_sort_tags = array(
 	// columns in $db_users table
+//	'access' => array('UM_TOP_ACCESS', &$L['Access'],),
+	'email' => array('UM_TOP_EMAIL', &$L['Email'],),
 	'id' => array('UM_TOP_USERID', &$L['Userid'],),
 	'name' => array('UM_TOP_NAME', &$L['Username'],),
 	'maingrp' => array('UM_TOP_MAINGRP', &$L['Maingroup'],),
@@ -239,7 +241,9 @@ foreach ($users_sort_tags as $k => $x)
 	$temp->assign($x[0], cot_rc('users_link_sort', array(
 		'asc_url' => implode($k, $asc),
 		'desc_url' => implode($k, $desc),
-		'text' => $x[1]
+		'text' => $x[1],
+		'icon_down' => $k == $s && $w == 'asc' ? $R['icon_vert_active']['asc'] : $R['icon_down'],
+		'icon_up' => $k == $s && $w == 'desc' ? $R['icon_vert_active']['desc'] : $R['icon_up']
 	)));
 }
 

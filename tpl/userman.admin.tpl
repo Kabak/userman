@@ -74,17 +74,17 @@
 		<!-- ENDIF -->
 			</td>		
 <!-- IF {UM_TOP_PM} -->			
-					<td class="coltop" class="width5">{UM_TOP_PM}</td>
+					<td class="coltop width5">{UM_TOP_PM}</td>
 <!-- ENDIF -->
-					<td class="coltop" class="width5">{UM_TOP_ACCESS}</td>
-					<td class="coltop" class="width5">{UM_TOP_ID}</td>
-					<td class="coltop" class="width20">{UM_TOP_NAME}</td>
-					<td class="coltop" class="width20">{PHP.L.Email}</td>
-					<td class="coltop" class="width20">{UM_TOP_GRPTITLE}</td>
-					<td class="coltop" class="width15">{UM_TOP_GRPLEVEL}</td>
-					<td class="coltop" class="width15">{UM_TOP_COUNTRY}</td>
-					<td class="coltop" class="width25">{UM_TOP_REGDATE}</td>
-					<td class="coltop" class="width25">{UM_TOP_DELETE}</td>
+					<td class="coltop width5">{UM_TOP_ACCESS}</td>
+					<td class="coltop width20">{UM_TOP_USERID}</td>
+					<td class="coltop width20">{UM_TOP_NAME}</td>
+					<td class="coltop width10">{UM_TOP_EMAIL}</td>
+					<td class="coltop width20">{UM_TOP_GRPTITLE}</td>
+
+					<td class="coltop width15">{UM_TOP_COUNTRY}</td>
+					<td class="coltop width25">{UM_TOP_REGDATE}</td>
+					<td class="coltop width25">{UM_TOP_DELETE}</td>
 				</tr>
 <!-- BEGIN: UM_ROW -->
 				<tr>
@@ -97,7 +97,6 @@
 					<td class="centerall">{UM_ROW_NAME}&nbsp</td>
 					<td class="centerall">{UM_ROW_EMAIL}</td>
 					<td class="centerall">{UM_ROW_MAINGRP}</td>
-					<td class="centerall">{UM_ROW_MAINGRPSTARS}</td>
 					<td class="centerall">{UM_ROW_COUNTRYFLAG} {UM_ROW_COUNTRY}</td>
 					<td class="centerall">{UM_ROW_REGDATE}</td>
 					<td class="centerall">{UM_ROW_DELETE}</td>
@@ -146,14 +145,14 @@
 						<td>{PHP.L.Country}:</td>
 						<td>{UM_EDIT_COUNTRY}</td>
 					</tr>
-<!-- IF {UM_USERS_EDIT_EXTRAFLD} != 0 -->
+					<!-- IF {UM_EDIT_EXTRAFLD} != 0 -->
 					<tr>
-			<!-- BEGIN:	EXTRAFLD -->
-						<td>{UM_USERS_EDIT_EXTRAFLD_TITLE}:</td>
-						<td>{UM_USERS_EDIT_EXTRAFLD}</td>	
-			<!-- END: EXTRAFLD -->							
+						<!-- BEGIN:	EXTRAFLD -->
+							<td>{UM_EDIT_EXTRAFLD_TITLE}:</td>
+							<td>{UM_EDIT_EXTRAFLD}</td>	
+						<!-- END: EXTRAFLD -->							
 					</tr>
-<!-- ENDIF -->										
+					<!-- ENDIF -->										
 					<tr>
 						<td>{PHP.L.Timezone}:</td>
 						<td>{UM_EDIT_TIMEZONE}</td>
@@ -322,10 +321,14 @@
 						<td>{PHP.L.Country}:</td>
 						<td>{UM_PROFILE_COUNTRY}</td>
 					</tr>
+					<!-- IF {UM_PROFILE_EXTRAFLD} != 0 -->
 					<tr>
-						<td>{UM_PROFILE_LOCATION_TITLE}:</td>
-						<td>{UM_PROFILE_LOCATION}</td>
-					</tr>					
+					<!-- BEGIN:	EXTRAFLD -->
+						<td>{UM_PROFILE_EXTRAFLD_TITLE}:</td>
+						<td>{UM_PROFILE_EXTRAFLD}</td>	
+					<!-- END: EXTRAFLD -->							
+					</tr>
+					<!-- ENDIF -->									
 					<tr>
 						<td>{PHP.L.Timezone}:</td>
 						<td>{UM_PROFILE_TIMEZONE}</td>
