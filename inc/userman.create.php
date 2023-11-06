@@ -19,7 +19,6 @@ cot_block($usr['auth_read']);
 
 global $temp;
 
-
 	$umuser['user_name'] = cot_import('um_username','P','TXT', 100, TRUE);
 	$umuser['user_email'] = cot_import('um_useremail','P','TXT',64, TRUE);
 	$rpassword1 = cot_import('um_password1','P','HTM',32);
@@ -58,32 +57,31 @@ global $temp;
 	    cot_error('aut_passwordmismatch', 'um_password2');
 	
 if (!cot_error_found())
+{
+	
+	$umuser['user_passsalt'] = cot_unique(16);
+	$umuser['user_passfunc'] = empty($cfg['hashfunc']) ? 'sha256' : $cfg['hashfunc'];
+	$umuser['user_password'] = cot_hash($rpassword1, $umuser['user_passsalt'], $umuser['user_passfunc']);
+
+	$userid = cot_add_user($umuser,$umuser['user_email'],$umuser['user_name'],$rpassword1,$umuser['user_maingrp'],$sendemail =false );
+	// Вносим в базу все данные о новом пользователе.
+	$db->update($db_users, $umuser, 'user_id='.$userid);
+
+	if ($cfg['users']['regnoactivation'] || $db->countRows($db_users) == 1)
 	{
-		
-		$umuser['user_passsalt'] = cot_unique(16);
-		$umuser['user_passfunc'] = empty($cfg['hashfunc']) ? 'sha256' : $cfg['hashfunc'];
-		$umuser['user_password'] = cot_hash($rpassword1, $umuser['user_passsalt'], $umuser['user_passfunc']);
-
-		$userid = cot_add_user($umuser,$umuser['user_email'],$umuser['user_name'],$rpassword1,$umuser['user_maingrp'],$sendemail =false );
-		// Вносим в базу все данные о новом пользователе.
-		$db->update($db_users, $umuser, 'user_id='.$userid);
-
-
-		if ($cfg['users']['regnoactivation'] || $db->countRows($db_users) == 1)
-		{
-			cot_redirect(cot_url('userman', 'msg=106', '', true));
-		}
-		elseif ($cfg['users']['regrequireadmin'])
-		{
-			cot_redirect(cot_url('userman', 'msg=118', '', true));
-		}
-		else
-                {
-                    cot_message(um_build_string($L['user'],$umuser['user_name'],$L['successcreation'],true));
-		    cot_redirect(cot_url('admin', 'm=other&p=userman', '', true));
-		}
+		cot_redirect(cot_url('userman', 'msg=106', '', true));
+	}
+	elseif ($cfg['users']['regrequireadmin'])
+	{
+		cot_redirect(cot_url('userman', 'msg=118', '', true));
 	}
 	else
 	{
+		cot_message(um_build_string($L['user'],$umuser['user_name'],$L['successcreation'],true));
 		cot_redirect(cot_url('admin', 'm=other&p=userman', '', true));
 	}
+}
+else
+{
+	cot_redirect(cot_url('admin', 'm=other&p=userman', '', true));
+}

@@ -20,10 +20,11 @@ cot_block($usr['auth_read']);
 global $temp;
 
 // Проверяем чтобы не удалили самого главного админа   
-if ($id > 1){
-// Получаем имя удаляемого для сообщения  Пользователь с именем - ххх   удалён.    
+if ($id > 1)
+{
+	// Получаем имя удаляемого для сообщения  Пользователь с именем - ххх   удалён.    
 	$name = um_delete_user( $id );
-// Update user temporary access DB		
+	// Update user temporary access DB		
 	um_delete_user_access( $id );
 
 	cot_message(um_build_string($L['user'],$name,$L['deleted']),'warning'); 		
@@ -32,4 +33,5 @@ else
 {
     cot_error($L['deldenied']);   
 }
-	cot_redirect(cot_url('admin', 'm=other&p=userman', '', true));
+	
+cot_redirect(cot_url('admin', 'm=other&p=userman', '', true));

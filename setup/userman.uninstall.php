@@ -19,9 +19,10 @@ global $db, $db_config, $db_userman;
 
 $u_list = $db->query("SELECT * FROM $db_userman ")->fetchAll();
 
-foreach ($u_list as $u_data ){
-// Устанавливаем пользователям уровень по умолчанию для этого пользователя в основных базах групп.
+foreach ($u_list as $u_data )
+{
+    // Устанавливаем пользователям уровень по умолчанию для этого пользователя в основных базах групп.
     um_gropus_idu($u_data['user_id'], um_string_to_massive($u_data['groups_default']));
 }
 
-$db->query("DROP TABLE IF EXISTS `cot_userman`");
+$db->query("DROP TABLE IF EXISTS $db_userman");

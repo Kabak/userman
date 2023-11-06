@@ -37,13 +37,14 @@ if($update == 'true')
 	$ruser['user_timezone'] = cot_import('rusertimezone','P','TXT');
 	$ruser['user_hideemail'] = cot_import('ruserhideemail','P','BOL');
 // Пришлось вырезать из модуля PM
-if (cot_module_active('pm'))	
-	$ruser['user_pmnotify'] = (int)cot_import('um_profilepmnotify','P','BOL');
+	if (cot_module_active('pm'))	
+		$ruser['user_pmnotify'] = (int)cot_import('um_profilepmnotify','P','BOL');
 	// Extra fields
 	foreach($cot_extrafields[$db_users] as $exfld)
 	{
 		$ruser['user_'.$exfld['field_name']] = cot_import_extrafields('ruser'.$exfld['field_name'], $exfld, 'P', $urr['user_'.$exfld['field_name']]);
 	}
+
 	$ruser['user_birthdate'] = cot_import_date('ruserbirthdate', false);
 	if (!is_null($ruser['user_birthdate']) && $ruser['user_birthdate'] > $sys['now'])
 	{
@@ -155,7 +156,7 @@ $profile_form_email = cot_inputbox('text', 'ruseremail', $urr['user_email'], arr
 $editor_class = $cfg['users']['usertextimg'] ? 'minieditor' : '';
 
 $temp->assign(array(
-        'UM_PROFILE_TITLE' => $L['title'],
+    'UM_PROFILE_TITLE' => $L['title'],
 	'UM_PROFILE_SUBTITLE' => $L['pro_subtitle'],
 	'UM_PROFILE_DETAILSLINK' => cot_url('admin','m=other&p=userman&a=edit&id='.$urr['user_id']),
 	'UM_PROFILE_EDITLINK' => cot_url('admin','m=other&p=userman&a=edit&id='.$urr['user_id']),
@@ -195,18 +196,19 @@ foreach($cot_extrafields[$db_users] as $exfld)
 		'UM_PROFILE_'.$tag.'_TITLE' => isset($L['user_'.$exfld['field_name'].'_title']) ? $L['user_'.$exfld['field_name'].'_title'] : $exfld['field_description']
 	));
 }
-    if(defined('COT_PM')){
-    $temp->assign(array(
-	'UM_PROFILE_PMNOTIFY' => cot_radiobox($urr['user_pmnotify'], 'um_profilepmnotify', array(1, 0), array($L['Yes'], $L['No'])),
-));
+    if(defined('COT_PM'))
+	{
+    	$temp->assign(array(
+		'UM_PROFILE_PMNOTIFY' => cot_radiobox($urr['user_pmnotify'], 'um_profilepmnotify', array(1, 0), array($L['Yes'], $L['No'])),
+		));
     }
 // Extra fields
 foreach($cot_extrafields[$db_users] as $exfld)
 {
 	$tag = strtoupper($exfld['field_name']);
 	$temp->assign(array(
-		'USERS_PROFILE_'.$tag => cot_build_extrafields('ruser'.$exfld['field_name'], $exfld, $urr['user_'.$exfld['field_name']]),
-		'USERS_PROFILE_'.$tag.'_TITLE' => isset($L['user_'.$exfld['field_name'].'_title']) ? $L['user_'.$exfld['field_name'].'_title'] : $exfld['field_description']
+	'USERS_PROFILE_'.$tag => cot_build_extrafields('ruser'.$exfld['field_name'], $exfld, $urr['user_'.$exfld['field_name']]),
+	'USERS_PROFILE_'.$tag.'_TITLE' => isset($L['user_'.$exfld['field_name'].'_title']) ? $L['user_'.$exfld['field_name'].'_title'] : $exfld['field_description']
 	));
 }
 

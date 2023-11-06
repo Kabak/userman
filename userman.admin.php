@@ -88,28 +88,18 @@ $users_sort_blacklist = array('email', 'lastip', 'password', 'sid', 'sidtime', '
 $users_sort_whitelist = array('id', 'name', 'maingrp', 'country', 'timezone', 'birthdate', 'gender', 'lang', 'regdate');
 
 if (empty($sort) || in_array(mb_strtolower($sort), $users_sort_blacklist) || !in_array($sort, $users_sort_whitelist) && !$db->fieldExists($db_users, "user_$sort"))
-{
 	$sort = 'regdate'; //name
-}
-if (!in_array($w, array('asc', 'desc')))
-{
-	$w = 'desc';//asc
-}
-if (empty($f))
-{
-	$f = 'all';
-}
-if (empty($d))
-{
-	$d = 0;
-}
+
+if (!in_array($w, array('asc', 'desc')))	$w = 'desc';//asc
+
+if (empty($f))	$f = 'all';
+
+if (empty($d))	$d = 0;
+
 
 $title[] = array(cot_url('admin'), $L['Users']);
 
-if(!empty($sq))
-{
-	$y = $sq;
-}
+if(!empty($sq))	$y = $sq;
 
 if ($sort == 'grplevel' || $sort == 'grpname' || $gm > 1)
 {
@@ -119,17 +109,19 @@ if ($sort == 'grplevel' || $sort == 'grpname' || $gm > 1)
 if( $f == 'search' && mb_strlen( is_null($y) ? "" : $y ) > 1)
 {
 
-// Search by Email
-    if( preg_match('|.*@.*\..*|',$y) ){
-	$sq = $y;
-	$title[] = $L['Search']." '".htmlspecialchars($y)."'";
-	$where['email'] = "user_email LIKE '%".$db->prep($y)."%'";
+	// Search by Email
+    if( preg_match('|.*@.*\..*|',$y) )
+	{
+		$sq = $y;
+		$title[] = $L['Search']." '".htmlspecialchars($y)."'";
+		$where['email'] = "user_email LIKE '%".$db->prep($y)."%'";
 
-// Search by Name if no @ symbol was not entered
-    } else{
-	$sq = $y;
-	$title[] = $L['Search']." '".htmlspecialchars($y)."'";
-	$where['namelike'] = "user_name LIKE '%".$db->prep($y)."%'";
+	// Search by Name if no @ symbol was not entered
+    } else
+	{
+		$sq = $y;
+		$title[] = $L['Search']." '".htmlspecialchars($y)."'";
+		$where['namelike'] = "user_name LIKE '%".$db->prep($y)."%'";
     }
 }
 elseif($g > 1)
@@ -175,9 +167,8 @@ $totalusers = $db->query(
 
 // Disallow accessing non-existent pages
 if ($totalusers > 0 && $d > $totalusers)
-{
 	cot_die_message(404);
-}
+
 isset ($join_columns) ? $join_columns : $join_columns ="";
 $sqlusers = $db->query(
 	"SELECT u.* $join_columns FROM $db_users AS u $join_condition
@@ -190,18 +181,19 @@ $pagenav = cot_pagenav('admin', $users_url_path, $d, $totalusers, $cfg['users'][
 
 $out['subtitle'] = $L['Users'];
 
-
 $countryfilters_titles = [];
 $countryfilters_values = [];
 $countryfilters_titles[] = $R['users_sel_def_l'].$L['Country'].$R['users_sel_def_r'];
 $countryfilters_values[] = cot_url('admin','m=other&p=userman');
 $countryfilters_titles[] = $L['None'];
 $countryfilters_values[] = cot_url('admin', 'm=other&p=userman&f=country_00');
+
 foreach ($cot_countries as $i => $x) 
 {
 	$countryfilters_titles[] = cot_cutstring($x, 23);
 	$countryfilters_values[] = cot_url('admin', 'm=other&p=userman&f=country_'.$i);
 }
+
 $countryfilters = cot_selectbox(cot_url('admin', 'm=other&p=userman&f='.$f), 'bycountry', $countryfilters_values, $countryfilters_titles, false, array('onchange' => 'redirect(this)'), '', true);
 // $countryfilters = cot_selectbox(cot_url('admin', array('m' => 'other', 'p' => 'userman','f'=> $f)), 'bycountry', $countryfilters_values, $countryfilters_titles, false, array('onchange' => 'redirect(this)'), '', true);
 
@@ -209,6 +201,7 @@ $countryfilters = cot_selectbox(cot_url('admin', 'm=other&p=userman&f='.$f), 'by
 $grpfilters_titles = array($L['Maingroup']);
 $grpfilters_group_values = array(cot_url('admin','m=other&p=userman'));
 $grpfilters_maingrp_values = array(cot_url('admin','m=other&p=userman'));
+
 foreach($cot_groups as $k => $i)
 {
 	$grpfilters_titles[] = $cot_groups[$k]['name'];
@@ -240,6 +233,7 @@ $temp->assign(array(
 $k = '_.__._';
 $asc = explode($k, cot_url('admin', array('m' => 'other', 'p' => 'userman','sort' => $k, 'w'=> 'asc') + $users_url_path));
 $desc = explode($k, cot_url('admin', array('m' => 'other', 'p' => 'userman','sort' => $k, 'w'=> 'desc') + $users_url_path));
+
 foreach ($users_sort_tags as $k => $x)
 {
 	$temp->assign($x[0], cot_rc('users_link_sort', array(
@@ -298,23 +292,25 @@ foreach ($sqlusers as $urr)
 	));
 	$temp->assign(cot_generate_um_usertags($urr, 'UM_ROW_'));
 
-// Генерируем вопрос по удалению пользователя
+	// Генерируем вопрос по удалению пользователя
 	$url_del = cot_confirm_url('admin.php?m=other&p=userman&a=delete&id='.$urr['user_id']);
 	$url_del_noconf = cot_url('admin','m=other&p=userman&a=silent_delete&id='.$urr['user_id']);
 	$temp->assign('UM_ROW_DELETE', cot_rc_link($url_del, cot_rc('del_icon', array('alt' => $L['delete'], 'title' => $L['delete'])), array('class' => 'confirmLink')));
 	$temp->assign('UM_ROW_DELETE_NOCONF', cot_rc_link($url_del_noconf, cot_rc('del_icon', array('alt' => $L['delete'], 'title' => $L['delete']))));
 	$id = $urr['user_id'];
 	$sql_access = $db->query("SELECT * FROM $db_userman WHERE user_id=$id LIMIT 1");
-	if ( $sql_access->rowCount() != 0 ){
+	if ( $sql_access->rowCount() != 0 )
+	{
 	    $us_er = $sql_access->fetch();
 	    if( $us_er['active'] )
 		$temp->assign(array('UM_ROW_ACCESS' => cot_rc_link(cot_url('admin', 'm=other&p=userman&a=access&id='.$urr['user_id']),$R['access'])));	
 	    else
 		$temp->assign(array('UM_ROW_ACCESS' => cot_rc_link(cot_url('admin', 'm=other&p=userman&a=access&id='.$urr['user_id']),$R['access_off'])));	
-        }
-	else{
+    }
+	else
+	{
 	    	$temp->assign(array('UM_ROW_ACCESS' => ''));   
-		}
+	}
 	
 	$temp->assign(array( 'UM_USER_ID' => $urr['user_id'] ));
 
@@ -364,6 +360,7 @@ $temp->assign(array(
 	'UM_CREATE_USER_GROUPS' => cot_build_um_groupsms($um_defaultgrp, $usr['isadmin'], $um_maingrp),
 	'UM_CREATE_USER_SIGNATURE' => cot_textarea('um_sign',$cfg['plugin']['userman']['defaultsign'], 1, 2, array('class' => $editor_class)),	
 ));
+
 if( $cfg['plugin']['userman']['defaultpass'] !='' )
 $temp->assign(array('UM_CREATE_USER_HELPPASS' => $L['um_defaultpass'].$cfg['plugin']['userman']['defaultpass'].' )'));
 

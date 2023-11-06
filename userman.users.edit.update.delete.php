@@ -5,10 +5,6 @@ Hooks=users.edit.update.delete
 [END_COT_EXT]
 ==================== */
 
-/* @var $db CotDB */
-/* @var $cache Cache */
-/* @var $t Xtemplate */
-
 /**
  * @package userman
  * @version 8.1.1

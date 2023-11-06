@@ -39,11 +39,10 @@ $sys['protecttopadmin'] = $sys['edited_istopadmin'] && !$sys['user_istopadmin'];
 
 if( $update == 'true')
 {
-    
-    	cot_check_xg();
+   	cot_check_xg();
 
 	$userdelete = cot_import('um_edit_userdelete','P','BOL');
-// Чтобы нельзя было удалить главного админа
+	// Чтобы нельзя было удалить главного админа
 	if ($userdelete && $id != 1)
 	{
 		// Avatar & photo delete
@@ -63,7 +62,7 @@ if( $update == 'true')
 			}			
 		}
 
-// Получаем имя удаляемого для сообщения  Пользователь с именем - ххх   удалён. 	    
+		// Получаем имя удаляемого для сообщения  Пользователь с именем - ххх   удалён. 	    
 		$u = $db->query("SELECT * FROM $db_users WHERE user_id=$id LIMIT 1")->fetch();
 		$name = $u['user_name'];
 		
@@ -81,16 +80,17 @@ if( $update == 'true')
 			cot_pfs_deleteall($id);
 		}
 
-// Update user temporary access DB		
-	include cot_incfile('userman', 'plug','users.edit.update.delete');
+		// Update user temporary access DB		
+		include cot_incfile('userman', 'plug','users.edit.update.delete');
 	
 		
 		cot_log("Deleted user #".$id,'adm');
                 cot_message(um_build_string($L['user'],$name,$L['deleted']),'warning');
                 cot_redirect(cot_url('admin', 'm=other&p=userman','', true));
 	}
-	else if ($userdelete && $id == 1){
-	        cot_error($L['deldenied']);   
+	else if ($userdelete && $id == 1)
+	{
+	    cot_error($L['deldenied']);   
 	}
 	  
 	if ( cot_plugin_active('userimages') )
@@ -110,8 +110,9 @@ if( $update == 'true')
 	$euser['user_theme'] = cot_import('um_edit_usertheme','P','TXT');
 	$euser['user_lang'] = cot_import('um_edit_userlang','P','ALP');
 	$euser['user_gender'] = cot_import('um_edit_usergender','P','TXT');
-// Пришлось вырезать из модуля PM
-if (cot_module_active('pm'))
+	
+	// Пришлось вырезать из модуля PM
+	if (cot_module_active('pm'))
 	$euser['user_pmnotify'] = (int)cot_import('um_userpmnotify','P','BOL');
 
 	$euser['user_birthdate'] = cot_import_date('um_edit_userbirthdate', false);		
@@ -164,17 +165,6 @@ if (cot_module_active('pm'))
 
 		$euser['user_name'] = ($euser['user_name']=='') ? $urr['user_name'] : $euser['user_name'];
 
-//		$euser['user_birthdate'] = (is_null($euser['user_birthdate'])) ? '0000-00-00' : cot_stamp2date($euser['user_birthdate']);
-/*
-		if (!$euserbanned)
-		{
-			$euser['user_banexpire'] = 0;
-		}
-		if ($euserbanned && $euser['user_banexpire']>0)
-		{
-			$euser['user_banexpire'] += $sys['now'];
-		}
-*/
 		if ($euser['user_name'] != $urr['user_name'])
 		{
 			$newname = $euser['user_name'];
@@ -246,14 +236,15 @@ if (cot_module_active('pm'))
 			cot_mail($urr['user_email'], $rsubject, $rbody);
 		}
 
-// Update user temporary access DB		
+		// Update user temporary access DB		
 		include cot_incfile('userman', 'plug','users.edit.update.done');
-// Если пользователь имеет временны доступ то не выводить сообщение что данные пользователя успешно обновлены		
-	if( $user_found['active'] != true  ){		
+		// Если пользователь имеет временны доступ то не выводить сообщение что данные пользователя успешно обновлены		
+		if( $user_found['active'] != true  )
+		{		
     		cot_auth_clear($id);
-		cot_log("Edited user #".$id,'adm');
-		cot_message($L['successupdprof'],'ok');
-	}
+			cot_log("Edited user #".$id,'adm');
+			cot_message($L['successupdprof'],'ok');
+		}
 		cot_redirect(cot_url('admin','m=other&p=userman&a=edit&id='.$id, '', true));
 	}
 	else
@@ -304,7 +295,7 @@ if ( cot_plugin_active('userimages') )
 	'UM_EDIT_GOBACK_TEXT' => $L['GoBack'],
 	'UM_EDIT_ACCESS' => cot_url('admin','m=other&p=userman&a=access&id='.$urr['user_id']),
 	'UM_EDIT_ACCESS_TEXT' => $L['accesstilltime_text'],
-));
+	));
     
 // Extra fields
 foreach($cot_extrafields[$db_users] as $exfld)
@@ -316,10 +307,11 @@ foreach($cot_extrafields[$db_users] as $exfld)
 	));
 }
 
-if (cot_module_active('pm')){
+if (cot_module_active('pm'))
+{
     $temp->assign(array(
 	'UM_EDIT_PMNOTIFY' => cot_radiobox($urr['user_pmnotify'], 'um_userpmnotify', array(1, 0), array($L['Yes'], $L['No'])),
-));	
-    }
+	));	
+}
 
-    	$temp->parse('MAIN.UM_EDIT');
+    $temp->parse('MAIN.UM_EDIT');
