@@ -63,29 +63,28 @@
 </form>
 </div>
 
-
+<div class="block">
+	<h2 class="users">{UM_LIST_TITLE}</h2> 
 <form action="{UM_CREATE_USER_DELETE_SEL}" method="post" name="um_user_update" enctype="multipart/form-data">			
-			<h2 class="users">{UM_LIST_TITLE}</h2>                                
-			<table class="cells">                                
-				<tr>
-			<td class="coltop">
+	<table class="cells">                                
+	<tr>
+		<td class="coltop">
 		<!-- IF {PHP.cfg.jquery} -->
-		<input name="allchek" class="checkbox" type="checkbox" value="" onclick="$('form[name=um_user_update] .checkbox').attr('checked', this.checked);" />
+			<input name="allchek" class="checkbox" type="checkbox" value="" onclick="$('form[name=um_user_update] .checkbox').attr('checked', this.checked);" />
 		<!-- ENDIF -->
-			</td>		
-<!-- IF {UM_TOP_PM} -->			
-					<td class="coltop width5">{UM_TOP_PM}</td>
-<!-- ENDIF -->
-					<td class="coltop width5">{UM_TOP_ACCESS}</td>
-					<td class="coltop width20">{UM_TOP_USERID}</td>
-					<td class="coltop width20">{UM_TOP_NAME}</td>
-					<td class="coltop width10">{UM_TOP_EMAIL}</td>
-					<td class="coltop width20">{UM_TOP_GRPTITLE}</td>
-
-					<td class="coltop width15">{UM_TOP_COUNTRY}</td>
-					<td class="coltop width25">{UM_TOP_REGDATE}</td>
-					<td class="coltop width25">{UM_TOP_DELETE}</td>
-				</tr>
+		</td>		
+		<!-- IF {UM_TOP_PM} -->			
+			<td class="coltop width5">{UM_TOP_PM}</td>
+		<!-- ENDIF -->
+			<td class="coltop width5">{UM_TOP_ACCESS}</td>
+			<td class="coltop width20">{UM_TOP_USERID}</td>
+			<td class="coltop width20">{UM_TOP_NAME}</td>
+			<td class="coltop width10">{UM_TOP_EMAIL}</td>
+			<td class="coltop width20">{UM_TOP_GRPTITLE}</td>
+			<td class="coltop width15">{UM_TOP_COUNTRY}</td>
+			<td class="coltop width25">{UM_TOP_REGDATE}</td>
+			<td class="coltop width25">{UM_TOP_DELETE}</td>
+		</tr>
 <!-- BEGIN: UM_ROW -->
 				<tr>
 					<td class="centerall"><input name="s[{UM_USER_ID}]" type="checkbox" class="checkbox" /></td>
@@ -106,6 +105,7 @@
 			<br>
 			<button type="submit" class="btn btn-primary large" onclick="this.form.value=this.value">{PHP.L.um_delete_sel}</button>
 </form>	
+</div>
 <br>
 		<div class="block">
 			<h2 class="prefs">{PHP.L.Filters}</h2>

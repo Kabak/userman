@@ -110,7 +110,76 @@ if ($sort == 'grplevel' || $sort == 'grpname' || $gm > 1)
 
 if( $f == 'search' && mb_strlen( is_null($y) ? "" : $y ) > 1)
 {
+	// search users by param
+	// atlast 2 param should be provided "before" "after" + valid date
+	if ( !empty($y) )
+	{
+		
+		$request_array = explode(' ', $y);
 
+		$size = sizeof( $request_array);
+
+		if ( $size < 2 ) goto skeep_uf;
+
+		$search_keys = array( "passive", "before", "after" );
+
+		//$size = sizeof( $search_keys );
+		$user_active = "";
+
+		for ( $index = 0; $index < $size; ++$index )
+		{
+			$val = array_search ( $request_array[$index], $search_keys );
+
+			if ( $val !== false )
+			{
+				if ( $val == "1" )
+				{
+					$where['regdate'] = "user_lastlog < ";
+					$regdate = " AND user_regdate < ";
+				} 
+				elseif ( $val == "2" )
+				{
+					$where['regdate'] = "user_lastlog > ";
+					$regdate = " AND user_regdate > ";
+				} 
+				elseif ( $val == "0" )
+				{
+					$user_active = " AND user_postcount = 0";
+				} 
+			}
+
+			if ( strtotime($request_array[$index]) != false )
+			{
+				$date = strtotime($request_array[$index]);
+			}			
+		}
+
+		if ( isset($date) && $date != false && isset($where['regdate']) )
+		{
+			$where['regdate'] .= $date . $regdate . $date . $user_active;
+			goto skeep_ENamme;
+		}
+		else
+		{	
+			cot_message($L['um_request_error'], 'warning');
+
+			if ( isset ($where['regdate'] ) )
+			{
+				unset ( $where['regdate'] );
+				$y = "";
+			}
+			else
+			{
+				$y = "";
+				$where['1'] = "1";
+				goto skeep_ENamme;
+			}
+		}
+
+skeep_uf:
+		unset ( $search_keys );
+	}
+	
 	// Search by Email
     if( preg_match('|.*@.*\..*|',$y) )
 	{
@@ -125,6 +194,8 @@ if( $f == 'search' && mb_strlen( is_null($y) ? "" : $y ) > 1)
 		$title[] = $L['Search']." '".htmlspecialchars($y)."'";
 		$where['namelike'] = "user_name LIKE '%".$db->prep($y)."%'";
     }
+
+skeep_ENamme:
 }
 elseif($g > 1)
 {
