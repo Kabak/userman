@@ -16,7 +16,7 @@ filter usage examples :
 1) 'after 01.01.2017'   - will show users registered after 01.01.2017
 2) 'before 01.01.2017'   - will show users registered before 01.01.2017
 3) 'before 01.01.2017 passive'   - will show users registered before 01.01.2017 
-    and did not post anithing on the forum
+    and did not post anything on the forum
 
 4) searching for user by email 
     'user@email.com'
