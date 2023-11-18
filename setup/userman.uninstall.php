@@ -4,7 +4,7 @@
  * Set all extended users rights to default state before delete plugin
  *
  * @package userman
- * @version 8.1.1
+ * @version 8.1.2
  * @author Aliaksei Kobak
  * @copyright Copyright (c) Aliaksei Kobak 2013 - 2023
  * @license BSD

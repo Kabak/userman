@@ -79,6 +79,7 @@
 			<td class="coltop width5">{UM_TOP_ACCESS}</td>
 			<td class="coltop width20">{UM_TOP_USERID}</td>
 			<td class="coltop width20">{UM_TOP_NAME}</td>
+			<td class="coltop width20">{UM_TOP_FPC}</td>			
 			<td class="coltop width10">{UM_TOP_EMAIL}</td>
 			<td class="coltop width20">{UM_TOP_GRPTITLE}</td>
 			<td class="coltop width15">{UM_TOP_COUNTRY}</td>
@@ -94,6 +95,7 @@
 					<td class="centerall">{UM_ROW_ACCESS}</td>
 					<td class="centerall">{UM_ROW_ID}</td>
 					<td class="centerall">{UM_ROW_NAME}&nbsp</td>
+					<td class="centerall">{UM_ROW_UFORUM}{PHP.cfg.separator}{UM_ROW_UPAGES}{PHP.cfg.separator}{UM_ROW_UCOMMENTS}</td>
 					<td class="centerall">{UM_ROW_EMAIL}</td>
 					<td class="centerall">{UM_ROW_MAINGRP}</td>
 					<td class="centerall">{UM_ROW_COUNTRYFLAG} {UM_ROW_COUNTRY}</td>

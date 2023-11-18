@@ -11,7 +11,7 @@ Hooks=tools
 
 /**
  * @package userman
- * @version 8.1.1
+ * @version 8.1.2
  * @author Aliaksei Kobak
  * @copyright Copyright (c) Aliaksei Kobak 2013 - 2023
  * @license BSD
@@ -89,7 +89,7 @@ $users_sort_tags = array(
 $users_sort_blacklist = array('email', 'lastip', 'password', 'sid', 'sidtime', 'lostpass', 'auth', 'token');
 $users_sort_whitelist = array('id', 'name', 'maingrp', 'country', 'timezone', 'birthdate', 'gender', 'lang', 'regdate');
 
-if (empty($sort) || in_array(mb_strtolower($sort), $users_sort_blacklist) || !in_array($sort, $users_sort_whitelist) && !$db->fieldExists($db_users, "user_$sort"))
+if (empty($sort) || in_array(mb_strtolower($sort), $users_sort_blacklist) || !in_array($sort, $users_sort_whitelist) && !Cot::$db->fieldExists($db_users, "user_$sort"))
 	$sort = 'regdate'; //name
 
 if (!in_array($w, array('asc', 'desc')))	$w = 'desc';//asc
@@ -111,7 +111,6 @@ if ($sort == 'grplevel' || $sort == 'grpname' || $gm > 1)
 if( $f == 'search' && mb_strlen( is_null($y) ? "" : $y ) > 1)
 {
 	// search users by param
-	// atlast 2 param should be provided "before" "after" + valid date
 	if ( !empty($y) )
 	{
 		
@@ -121,9 +120,8 @@ if( $f == 'search' && mb_strlen( is_null($y) ? "" : $y ) > 1)
 
 		if ( $size < 2 ) goto skeep_uf;
 
-		$search_keys = array( "passive", "before", "after" );
+		$search_keys = array( "passive", "before", "after", "neverlogin", "all" );
 
-		//$size = sizeof( $search_keys );
 		$user_active = "";
 
 		for ( $index = 0; $index < $size; ++$index )
@@ -132,7 +130,11 @@ if( $f == 'search' && mb_strlen( is_null($y) ? "" : $y ) > 1)
 
 			if ( $val !== false )
 			{
-				if ( $val == "1" )
+				if ( $val == "0" )
+				{
+					$user_active = " AND user_postcount = 0";
+				} 
+				elseif ( $val == "1" )
 				{
 					$where['regdate'] = "user_lastlog < ";
 					$regdate = " AND user_regdate < ";
@@ -141,11 +143,18 @@ if( $f == 'search' && mb_strlen( is_null($y) ? "" : $y ) > 1)
 				{
 					$where['regdate'] = "user_lastlog > ";
 					$regdate = " AND user_regdate > ";
-				} 
-				elseif ( $val == "0" )
+				}
+				elseif ( $val == "3" )
 				{
-					$user_active = " AND user_postcount = 0";
-				} 
+					$time = strtotime('01.01.1970 05:00');
+					$where['regdate'] = "user_lastlog < ". $time;
+					$regdate1 = "";
+				}
+				elseif ( $val == "4" )
+				{
+					$where['regdate'] = "";
+				}
+
 			}
 
 			if ( strtotime($request_array[$index]) != false )
@@ -156,7 +165,15 @@ if( $f == 'search' && mb_strlen( is_null($y) ? "" : $y ) > 1)
 
 		if ( isset($date) && $date != false && isset($where['regdate']) )
 		{
-			$where['regdate'] .= $date . $regdate . $date . $user_active;
+			if ( isset($regdate1) )
+			{
+				$where['regdate'] .= $regdate . $date . $user_active;
+			}
+			else
+			{
+				$where['regdate'] .= $date . $regdate . $date . $user_active;
+			}
+			
 			goto skeep_ENamme;
 		}
 		else
@@ -185,14 +202,14 @@ skeep_uf:
 	{
 		$sq = $y;
 		$title[] = $L['Search']." '".htmlspecialchars($y)."'";
-		$where['email'] = "user_email LIKE '%".$db->prep($y)."%'";
+		$where['email'] = "user_email LIKE '%".Cot::$db->prep($y)."%'";
 
 	// Search by Name if no @ symbol was not entered
     } else
 	{
 		$sq = $y;
 		$title[] = $L['Search']." '".htmlspecialchars($y)."'";
-		$where['namelike'] = "user_name LIKE '%".$db->prep($y)."%'";
+		$where['namelike'] = "user_name LIKE '%".Cot::$db->prep($y)."%'";
     }
 
 skeep_ENamme:
@@ -234,16 +251,18 @@ switch ($sort)
 
 $users_url_path = array('m' => 'other','p' => 'userman','f' => $f, 'g' => $g, 'gm' => $gm, 'sort' => $sort, 'w' => $w, 'sq' => $sq);
 isset ($join_condition) ? $join_condition : $join_condition ="";
-$totalusers = $db->query(
+$totalusers = Cot::$db->query(
 	"SELECT COUNT(*) FROM $db_users AS u $join_condition WHERE ".implode(" AND ", $where)
 )->fetchColumn();
+
+cot_message($L['um_found'] . (string)$totalusers . $L['um_users']);
 
 // Disallow accessing non-existent pages
 if ($totalusers > 0 && $d > $totalusers)
 	cot_die_message(404);
 
 isset ($join_columns) ? $join_columns : $join_columns ="";
-$sqlusers = $db->query(
+$sqlusers = Cot::$db->query(
 	"SELECT u.* $join_columns FROM $db_users AS u $join_condition
 	WHERE ".implode(" AND ", $where)." ORDER BY $sqlorder LIMIT $d,{$cfg['users']['maxusersperpage']}"
 )->fetchAll();
@@ -299,6 +318,7 @@ $temp->assign(array(
 	'UM_TOP_FILTERS_COUNTRY' => $countryfilters,
 	'UM_TOP_FILTERS_MAINGROUP' => $maingrpfilters,
 	'UM_TOP_FILTERS_GROUP' => $grpfilters,
+	'UM_TOP_FPC' => $L['um_fpc'],
 	'UM_TOP_FILTERS_SEARCH' => cot_inputbox('text', 'y', $y, array('size' => 30, 'maxlength' => 30)),
 	'UM_TOP_FILTERS_SUBMIT' => cot_inputbox('submit', 'submit', $L['Search']),
 ));
@@ -353,19 +373,13 @@ else if ($a == 'delete_selected') // Delete selected group
 	cot_redirect(cot_url('admin', 'm=other&p=userman','', true));
 }
 
-$sql = $db->query("SELECT * FROM $db_users");
-$rowcount = $sql->rowCount();
-cot_die($rowcount==0);
-
 $jj = 0;
 foreach ($sqlusers as $urr)
 {
 	$jj++;
-	$temp->assign(array(
-        'UM_ROW_NUM' => $jj,
-		'UM_ROW' => $urr
-	));
-	$temp->assign(cot_generate_um_usertags($urr, 'UM_ROW_'));
+
+
+
 
 	// Генерируем вопрос по удалению пользователя
 	$url_del = cot_confirm_url('admin.php?m=other&p=userman&a=delete&id='.$urr['user_id']);
@@ -373,7 +387,7 @@ foreach ($sqlusers as $urr)
 	$temp->assign('UM_ROW_DELETE', cot_rc_link($url_del, cot_rc('del_icon', array('alt' => $L['delete'], 'title' => $L['delete'])), array('class' => 'confirmLink')));
 	$temp->assign('UM_ROW_DELETE_NOCONF', cot_rc_link($url_del_noconf, cot_rc('del_icon', array('alt' => $L['delete'], 'title' => $L['delete']))));
 	$id = $urr['user_id'];
-	$sql_access = $db->query("SELECT * FROM $db_userman WHERE user_id=$id LIMIT 1");
+	$sql_access = Cot::$db->query("SELECT * FROM $db_userman WHERE user_id=$id LIMIT 1");
 	if ( $sql_access->rowCount() != 0 )
 	{
 	    $us_er = $sql_access->fetch();
@@ -387,6 +401,35 @@ foreach ($sqlusers as $urr)
 	    	$temp->assign(array('UM_ROW_ACCESS' => ''));   
 	}
 	
+	// Users pages & comments
+	if ( cot_module_active('page') )
+	{
+		$use_page_amount = Cot::$db->query("SELECT COUNT(*) FROM ". Cot::$db->pages ." WHERE page_ownerid = " . $urr['user_id'] )->fetchColumn();
+	}
+	else
+	{
+		$use_page_amount = "X"; 
+	}
+
+	if ( cot_plugin_active('comments') )
+	{
+		$use_comments_amount = Cot::$db->query("SELECT COUNT(*) FROM ". Cot::$db->com ." WHERE com_authorid = " . $urr['user_id'] )->fetchColumn();
+	}
+	else
+	{
+		$use_comments_amount = "X"; 
+	}
+
+	$temp->assign(array(
+		'UM_ROW_NUM' => $jj,
+		'UM_ROW' => $urr,
+		'UM_ROW_UFORUM' => $urr['user_postcount'],
+		'UM_ROW_UPAGES' => $use_page_amount,
+		'UM_ROW_UCOMMENTS' => $use_comments_amount,
+		));
+	$temp->assign(cot_generate_um_usertags($urr, 'UM_ROW_'));
+
+
 	$temp->assign(array( 'UM_USER_ID' => $urr['user_id'] ));
 
 	$temp->parse('MAIN.CREATE.UM_ROW');

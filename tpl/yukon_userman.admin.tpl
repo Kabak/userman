@@ -12,7 +12,7 @@
 						//]]>
 					</script>
 
-{FILE "{PHP.cfg.themes_dir}/{PHP.cfg.defaulttheme}/warnings.tpl"}
+{FILE "{PHP.cfg.themes_dir}/admin/{PHP.cfg.admintheme}/warnings.tpl"}
 
 <!-- BEGIN: CREATE -->
 						<div class="row">
@@ -120,6 +120,7 @@
 									<td class="centerall">{UM_TOP_ACCESS}</td>
 									<td class="centerall">{UM_TOP_USERID}</td>									
 									<td class="centerall">{UM_TOP_NAME}</td>
+									<td class="centerall">{UM_TOP_FPC}</td>
 									<td class="centerall">{UM_TOP_EMAIL}</td>
 									<td class="centerall" >{UM_TOP_GRPTITLE}</td>
 									<td class="centerall">{UM_TOP_GRPLEVEL}</td>
@@ -136,6 +137,7 @@
 									<td class="centerall">{UM_ROW_ACCESS}</td>
 									<td class="centerall">{UM_ROW_ID}</td>									
 									<td class="centerall">{UM_ROW_NAME}&nbsp</td>
+									<td class="centerall">{UM_ROW_UFORUM}{PHP.cfg.separator}{UM_ROW_UPAGES}{PHP.cfg.separator}{UM_ROW_UCOMMENTS}</td>
 									<td class="centerall">{UM_ROW_EMAIL}</td>
 									<td class="centerall">{UM_ROW_MAINGRP}</td>
 									<td class="centerall">{UM_ROW_MAINGRPSTARS}</td>
