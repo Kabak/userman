@@ -255,7 +255,7 @@ $totalusers = Cot::$db->query(
 	"SELECT COUNT(*) FROM $db_users AS u $join_condition WHERE ".implode(" AND ", $where)
 )->fetchColumn();
 
-cot_message($L['um_found'] . (string)$totalusers . $L['um_users']);
+//cot_message($L['um_found'] . (string)$totalusers . $L['um_users']);
 
 // Disallow accessing non-existent pages
 if ($totalusers > 0 && $d > $totalusers)
@@ -535,6 +535,8 @@ goto END;
 
 }
 $adminhelp = $L['userman_help_main'];
+// display number of found users
+cot_message($L['um_found'] . (string)$totalusers . $L['um_users']);
 cot_display_messages($temp);
 
     $temp->parse('MAIN');
