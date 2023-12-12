@@ -481,6 +481,10 @@ function cot_generate_um_usertags($user_data, $tag_prefix = '', $emptyname='', $
 			$user_data['user_birthdate'] = cot_date2stamp($user_data['user_birthdate']);
 			$user_data['user_text'] = cot_parse($user_data['user_text'], $cfg['users']['usertextimg']);
 
+
+	// No Forum module
+	!isset($user_data['user_postcount']) ? $user_data['user_postcount'] = "X" : $user_data['user_postcount'];
+
 			$temp_array = array(
 				'ID' => $user_data['user_id'],
 				'NAME' => cot_build_um_user($user_data['user_id'], htmlspecialchars($user_data['user_name'])),

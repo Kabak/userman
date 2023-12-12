@@ -58,9 +58,9 @@ $y = cot_import('y', 'P', 'TXT', 30);
 $sq = cot_import('sq', 'G', 'TXT', 8);
 $update = cot_import('update','G', 'TXT',8);
 
-if ($a == 'edit'){ include cot_incfile('userman', 'plug','edit'); }
-else if( $a == 'access'){ include cot_incfile('userman', 'plug','access'); } // Temporary access user to groups
-else if( $a == 'profile'){ include cot_incfile('userman', 'plug','profile'); }
+if ($a == 'edit'){ include_once cot_incfile('userman', 'plug','edit'); }
+else if( $a == 'access'){ include_once cot_incfile('userman', 'plug','access'); } // Temporary access user to groups
+else if( $a == 'profile'){ include_once cot_incfile('userman', 'plug','profile'); }
 else 
 {
 
@@ -350,11 +350,11 @@ foreach($cot_extrafields[$db_users] as $exfld)
 	)));
 }
 
-if		($a == 'create'){ include cot_incfile('userman', 'plug','create'); } // Create new user
-else if ($a == 'delete'){ include cot_incfile('userman', 'plug','delete'); } // Delete user
+if		($a == 'create'){  include_once cot_incfile('userman', 'plug','create'); } // Create new user
+else if ($a == 'delete'){  include_once cot_incfile('userman', 'plug','delete'); } // Delete user
 else if ($a == 'silent_delete') // Silent delete user
 { 
-	include cot_incfile('userman', 'plug','delete');
+	include_once cot_incfile('userman', 'plug','delete');
 	cot_redirect(cot_url('admin', 'm=other&p=userman','', true));
 }
 else if ($a == 'delete_selected') // Delete selected group
@@ -366,7 +366,7 @@ else if ($a == 'delete_selected') // Delete selected group
 		
 		foreach ($s as $id => $v)
 		{
-			include cot_incfile('userman', 'plug','delete');
+			include_once cot_incfile('userman', 'plug','delete');
 		}
 	}
 
@@ -419,6 +419,9 @@ foreach ($sqlusers as $urr)
 	{
 		$use_comments_amount = "X"; 
 	}
+
+	// No Forum module
+	!isset($urr['user_postcount']) ? $urr['user_postcount'] = "X" : $urr['user_postcount'];
 
 	$temp->assign(array(
 		'UM_ROW_NUM' => $jj,
