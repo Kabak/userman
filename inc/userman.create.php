@@ -67,7 +67,7 @@ if (!cot_error_found())
 	// Вносим в базу все данные о новом пользователе.
 	$db->update($db_users, $umuser, 'user_id='.$userid);
 
-	if ($cfg['users']['regnoactivation'] || $db->countRows($db_users) == 1)
+	if ( $db->countRows($db_users) == 1 )
 	{
 		cot_redirect(cot_url('userman', 'msg=106', '', true));
 	}
@@ -78,10 +78,7 @@ if (!cot_error_found())
 	else
 	{
 		cot_message(um_build_string($L['user'],$umuser['user_name'],$L['successcreation'],true));
-		cot_redirect(cot_url('admin', 'm=other&p=userman', '', true));
 	}
 }
-else
-{
-	cot_redirect(cot_url('admin', 'm=other&p=userman', '', true));
-}
+
+cot_redirect(cot_url('admin', 'm=other&p=userman','', true));

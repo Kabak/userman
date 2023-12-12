@@ -33,5 +33,3 @@ else
 {
     cot_error($L['deldenied']);   
 }
-	
-cot_redirect(cot_url('admin', 'm=other&p=userman', '', true));

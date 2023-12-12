@@ -58,9 +58,9 @@ $y = cot_import('y', 'P', 'TXT', 30);
 $sq = cot_import('sq', 'G', 'TXT', 8);
 $update = cot_import('update','G', 'TXT',8);
 
-if ($a == 'edit'){ include_once cot_incfile('userman', 'plug','edit'); }
-else if( $a == 'access'){ include_once cot_incfile('userman', 'plug','access'); } // Temporary access user to groups
-else if( $a == 'profile'){ include_once cot_incfile('userman', 'plug','profile'); }
+if ($a == 'edit'){ include cot_incfile('userman', 'plug','edit'); }
+else if( $a == 'access'){ include cot_incfile('userman', 'plug','access'); } // Temporary access user to groups
+else if( $a == 'profile'){ include cot_incfile('userman', 'plug','profile'); }
 else 
 {
 
@@ -350,11 +350,15 @@ foreach($cot_extrafields[$db_users] as $exfld)
 	)));
 }
 
-if		($a == 'create'){  include_once cot_incfile('userman', 'plug','create'); } // Create new user
-else if ($a == 'delete'){  include_once cot_incfile('userman', 'plug','delete'); } // Delete user
+if		($a == 'create'){  include cot_incfile('userman', 'plug','create'); 
+								   cot_redirect(cot_url('admin', 'm=other&p=userman','', true));
+} // Create new user
+else if ($a == 'delete'){  include cot_incfile('userman', 'plug','delete'); 
+								   cot_redirect(cot_url('admin', 'm=other&p=userman','', true));
+} // Delete user
 else if ($a == 'silent_delete') // Silent delete user
 { 
-	include_once cot_incfile('userman', 'plug','delete');
+	include cot_incfile('userman', 'plug','delete');
 	cot_redirect(cot_url('admin', 'm=other&p=userman','', true));
 }
 else if ($a == 'delete_selected') // Delete selected group
@@ -366,7 +370,7 @@ else if ($a == 'delete_selected') // Delete selected group
 		
 		foreach ($s as $id => $v)
 		{
-			include_once cot_incfile('userman', 'plug','delete');
+			include cot_incfile('userman', 'plug','delete');
 		}
 	}
 
@@ -377,9 +381,6 @@ $jj = 0;
 foreach ($sqlusers as $urr)
 {
 	$jj++;
-
-
-
 
 	// Генерируем вопрос по удалению пользователя
 	$url_del = cot_confirm_url('admin.php?m=other&p=userman&a=delete&id='.$urr['user_id']);
