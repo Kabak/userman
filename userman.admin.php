@@ -86,8 +86,8 @@ $users_sort_tags = array(
 	'grpname' => array('UM_TOP_GRPTITLE', &$L['Maingroup'],),
 );
 
-$users_sort_blacklist = array('email', 'lastip', 'password', 'sid', 'sidtime', 'lostpass', 'auth', 'token');
-$users_sort_whitelist = array('id', 'name', 'maingrp', 'country', 'timezone', 'birthdate', 'gender', 'lang', 'regdate');
+$users_sort_blacklist = array( 'lastip', 'password', 'sid', 'sidtime', 'lostpass', 'auth', 'token');
+$users_sort_whitelist = array('email', 'id', 'name', 'grpname', 'grplevel', 'maingrp', 'country', 'timezone', 'birthdate', 'gender', 'lang', 'regdate');
 
 if (empty($sort) || in_array(mb_strtolower($sort), $users_sort_blacklist) || !in_array($sort, $users_sort_whitelist) && !Cot::$db->fieldExists($db_users, "user_$sort"))
 	$sort = 'regdate'; //name
@@ -329,13 +329,17 @@ $desc = explode($k, cot_url('admin', array('m' => 'other', 'p' => 'userman','sor
 
 foreach ($users_sort_tags as $k => $x)
 {
-	$temp->assign($x[0], cot_rc('users_link_sort', array(
+	$temp->assign($x[0], 
+	!in_array($k, $users_sort_blacklist) && in_array($k, $users_sort_whitelist) ?
+	cot_rc('users_link_sort', array(
 		'asc_url' => implode($k, $asc),
 		'desc_url' => implode($k, $desc),
 		'text' => $x[1],
-		'icon_down' => $k == $s && $w == 'asc' ? $R['icon_vert_active']['asc'] : $R['icon_down'],
-		'icon_up' => $k == $s && $w == 'desc' ? $R['icon_vert_active']['desc'] : $R['icon_up']
-	)));
+		'icon_down' => $k == $sort && $w == 'asc' ? $R['icon_vert_active']['asc'] : $R['icon_down'],
+		'icon_up' => $k == $sort && $w == 'desc' ? $R['icon_vert_active']['desc'] : $R['icon_up']
+	))
+	: $x[1]
+);
 }
 
 // Extra fields for users
