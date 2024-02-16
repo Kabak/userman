@@ -41,6 +41,7 @@ require_once cot_incfile('userman', 'plug', 'resources');
 
 $temp = new XTemplate(cot_tplfile('userman.admin', 'plug', true));
 
+$totalusers = 0;
 // Edit name of user in userman form available if logпed user is admin
 $protected = !$usr['isadmin'] ? array('disabled' => 'disabled') : array();
 
