@@ -45,6 +45,7 @@ defined('COT_CODE') or die('Wrong URL');
 
   $L['um_request_error'] = 'Error in request parameters';
 
+  $L['um_admin_help'] = 'Help to Administator';
   $L['users_list'] = 'Users list';
   $L['delete'] = 'Delete user';
   $L['deldenied'] = ' You can not delete Superadmin ';

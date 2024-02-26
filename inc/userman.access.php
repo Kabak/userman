@@ -140,6 +140,7 @@ $temp->assign(array(
 'UM_ACCESS_GOBACK_TEXT' => $L['GoBackEdit'],
 'UM_ACCESS_GOBACK_UMTOP' => cot_url('admin','m=other&p=userman'),
 'UM_ACCESS_GOBACK_UMTOP_TEXT' => $L['GoBack'],
+'UM_ACCESS_HELP' => $L['um_admin_help'],
 ));
 
 $L['userman_help'] =  $L['userman_help_access'];

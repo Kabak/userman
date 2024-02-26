@@ -121,6 +121,11 @@
 		</div>
 		<p class="paging"><span>{PHP.L.users_usersperpage}: {UM_TOP_MAXPERPAGE}</span><span>{PHP.L.users_usersinthissection}: {UM_TOP_TOTALUSERS}</span>{UM_TOP_PAGEPREV}{UM_TOP_PAGNAV}{UM_TOP_PAGENEXT}</p>
 
+	<div class="block">
+		<h2 class="prefs">{UM_ADMIN_HELP}</h2>
+		<p>{PHP.L.userman_help_main}</p>
+	</div>
+
 <!-- END: CREATE -->
 
 <!-- BEGIN: UM_EDIT -->
@@ -447,6 +452,10 @@
 	
 		</div>
 
+		<div class="block">
+			<h2 class="prefs">{UM_ACCESS_HELP}</h2>
+			<p>{PHP.L.userman_help_access}</p>
+		</div>		
 <!-- END: UM_TIME_ACCESS -->  
 
 <!-- END: MAIN -->          

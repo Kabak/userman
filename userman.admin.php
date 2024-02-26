@@ -507,7 +507,8 @@ $temp->assign(array(
 $temp->assign(array(         
 	'UM_LIST_TITLE' => $L['users_list'],
 	'UM_TOP_DELETE' => $L['Delete'],
-	'UM_TOP_ACCESS' => $L['access_title'],  
+	'UM_TOP_ACCESS' => $L['access_title'],
+	'UM_ADMIN_HELP' => $L['um_admin_help'],   
 	'UM_TOP_ID' => 'User ID',
 ));
 
